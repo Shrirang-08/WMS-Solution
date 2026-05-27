@@ -1,0 +1,26 @@
+<mat-card>
+  <h2>Attendance</h2>
+  <p>Check-in, check-out, and monthly attendance reports will appear here.</p>
+</mat-card>
+  <div class="attendance__header">
+    <h2>Attendance</h2>
+  </div>
+
+  <div *ngIf="auth.role === 'Staff'">
+    <div style="margin-bottom:12px;">
+      <button mat-raised-button color="primary" (click)="checkIn()">Check In</button>
+    </div>
+    <h3>This Month</h3>
+    <div *ngFor="let a of attendance" style="padding:8px 0;border-bottom:1px solid #eee;">
+      {{a.attendanceDate}} — In: {{a.checkIn || '—'}} Out: {{a.checkOut || '—'}}
+      <button mat-button color="accent" *ngIf="a.checkIn && !a.checkOut" (click)="checkOut(a.id)">Check Out</button>
+    </div>
+  </div>
+
+  <div *ngIf="auth.role === 'Manager' || auth.role === 'Admin'">
+    <h3>Team Attendance (this month)</h3>
+    <!-- For now show own attendance as placeholder; later aggregate team -->
+    <div *ngFor="let a of attendance" style="padding:8px 0;border-bottom:1px solid #eee;">
+      {{a.attendanceDate}} — In: {{a.checkIn || '—'}} Out: {{a.checkOut || '—'}}
+    </div>
+  </div>

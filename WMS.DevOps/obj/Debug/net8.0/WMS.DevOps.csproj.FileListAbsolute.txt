@@ -1,0 +1,11 @@
+C:\Users\HP\Desktop\Sprint Project\WMS-Solution\WMS.DevOps\bin\Debug\net8.0\WMS.DevOps.deps.json
+C:\Users\HP\Desktop\Sprint Project\WMS-Solution\WMS.DevOps\bin\Debug\net8.0\WMS.DevOps.dll
+C:\Users\HP\Desktop\Sprint Project\WMS-Solution\WMS.DevOps\bin\Debug\net8.0\WMS.DevOps.pdb
+C:\Users\HP\Desktop\Sprint Project\WMS-Solution\WMS.DevOps\obj\Debug\net8.0\WMS.DevOps.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\HP\Desktop\Sprint Project\WMS-Solution\WMS.DevOps\obj\Debug\net8.0\WMS.DevOps.AssemblyInfoInputs.cache
+C:\Users\HP\Desktop\Sprint Project\WMS-Solution\WMS.DevOps\obj\Debug\net8.0\WMS.DevOps.AssemblyInfo.cs
+C:\Users\HP\Desktop\Sprint Project\WMS-Solution\WMS.DevOps\obj\Debug\net8.0\WMS.DevOps.csproj.CoreCompileInputs.cache
+C:\Users\HP\Desktop\Sprint Project\WMS-Solution\WMS.DevOps\obj\Debug\net8.0\WMS.DevOps.dll
+C:\Users\HP\Desktop\Sprint Project\WMS-Solution\WMS.DevOps\obj\Debug\net8.0\refint\WMS.DevOps.dll
+C:\Users\HP\Desktop\Sprint Project\WMS-Solution\WMS.DevOps\obj\Debug\net8.0\WMS.DevOps.pdb
+C:\Users\HP\Desktop\Sprint Project\WMS-Solution\WMS.DevOps\obj\Debug\net8.0\ref\WMS.DevOps.dll

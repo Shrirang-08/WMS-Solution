@@ -1,0 +1,18 @@
+<section class="dashboard">
+  <h2>Dashboard</h2>
+
+  <ng-container *ngIf="summary$ | async as summary">
+    <div class="dashboard__cards">
+      <mat-card><strong>{{ summary.totalEmployees }}</strong><span>Employees</span></mat-card>
+      <mat-card><strong>{{ summary.totalDepartments }}</strong><span>Departments</span></mat-card>
+      <mat-card><strong>{{ summary.totalProjects }}</strong><span>Projects</span></mat-card>
+      <mat-card><strong>{{ summary.pendingLeaves }}</strong><span>Pending Leaves</span></mat-card>
+      <mat-card><strong>{{ summary.todayPresentCount }}</strong><span>Present Today</span></mat-card>
+    </div>
+    <div class="dashboard__actions">
+      <button mat-stroked-button color="primary" *ngIf="auth.role === 'Admin'">Admin: Manage System</button>
+      <button mat-stroked-button color="accent" *ngIf="auth.role === 'Manager'">Manager: View Team</button>
+      <button mat-stroked-button *ngIf="auth.role === 'Staff'">My Activities</button>
+    </div>
+  </ng-container>
+</section>

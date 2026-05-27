@@ -1,0 +1,88 @@
+trigger:
+  branches:
+    include:
+      - main
+      - dev
+      - feature/*
+
+pool:
+  vmImage: 'windows-latest'
+
+variables:
+  solution: 'WMS-Solution.slnx'
+  buildPlatform: 'Any CPU'
+  buildConfiguration: 'Release'
+  dotnetVersion: '8.x'
+  nodeVersion: '20.x'
+
+stages:
+  - stage: Build
+    displayName: 'Build Backend & Frontend'
+    jobs:
+      - job: BuildBackend
+        displayName: 'Build .NET Backend'
+        steps:
+          - task: UseDotNet@2
+            displayName: 'Install .NET SDK'
+            inputs:
+              packageType: 'sdk'
+              version: '$(dotnetVersion)'
+
+          - task: DotNetCoreCLI@2
+            displayName: 'Restore NuGet packages'
+            inputs:
+              command: 'restore'
+              projects: '$(solution)'
+
+          - task: DotNetCoreCLI@2
+            displayName: 'Build solution'
+            inputs:
+              command: 'build'
+              projects: '$(solution)'
+              arguments: '--configuration $(buildConfiguration) --no-restore'
+
+          - task: DotNetCoreCLI@2
+            displayName: 'Run unit tests'
+            inputs:
+              command: 'test'
+              projects: '**/WMS.Tests.csproj'
+              arguments: '--configuration $(buildConfiguration) --no-build --collect "Code Coverage"'
+
+          - task: DotNetCoreCLI@2
+            displayName: 'Publish API'
+            inputs:
+              command: 'publish'
+              publishWebProjects: false
+              projects: 'WMS.API/WMS.API.csproj'
+              arguments: '--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)/backend'
+              zipAfterPublish: true
+
+          - task: PublishBuildArtifacts@1
+            displayName: 'Publish backend artifact'
+            inputs:
+              pathToPublish: '$(Build.ArtifactStagingDirectory)/backend'
+              artifactName: 'backend-drop'
+
+      - job: BuildFrontend
+        displayName: 'Build Angular Frontend'
+        steps:
+          - task: NodeTool@0
+            displayName: 'Install Node.js'
+            inputs:
+              versionSpec: '$(nodeVersion)'
+
+          - script: |
+              cd WMS-Client
+              npm ci
+            displayName: 'Install npm dependencies'
+
+          - script: |
+              cd WMS-Client
+              npx ng build --configuration production
+            displayName: 'Build Angular app'
+
+          - task: PublishBuildArtifacts@1
+            displayName: 'Publish frontend artifact'
+            inputs:
+              pathToPublish: 'WMS-Client/dist/WMS-Client'
+              artifactName: 'frontend-drop'

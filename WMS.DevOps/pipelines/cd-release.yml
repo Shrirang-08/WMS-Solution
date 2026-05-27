@@ -1,0 +1,97 @@
+trigger: none
+pr: none
+
+resources:
+  pipelines:
+    - pipeline: ciPipeline
+      source: 'WMS-CI-Pipeline'
+      trigger:
+        branches:
+          include:
+            - main
+
+variables:
+  azureSubscription: 'AzureServiceConnection'
+  backendAppName: 'wms-api-app'
+  frontendAppName: 'wms-client-app'
+  resourceGroup: 'WMS-RG'
+  sqlServerName: 'wms-sql-server'
+  sqlDatabaseName: 'WMSDb'
+
+stages:
+  - stage: DeployBackend
+    displayName: 'Deploy Backend to Azure App Service'
+    jobs:
+      - deployment: DeployApi
+        displayName: 'Deploy API'
+        environment: 'production'
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - download: current
+                  artifact: 'backend-drop'
+
+                - task: AzureWebApp@1
+                  displayName: 'Deploy to App Service'
+                  inputs:
+                    azureSubscription: '$(azureSubscription)'
+                    appType: 'webApp'
+                    appName: '$(backendAppName)'
+                    package: '$(Pipeline.Workspace)/backend-drop/**/*.zip'
+                    deploymentMethod: 'zipDeploy'
+
+                - task: AzureAppServiceSettings@1
+                  displayName: 'Configure App Settings'
+                  inputs:
+                    azureSubscription: '$(azureSubscription)'
+                    appName: '$(backendAppName)'
+                    appSettings: |
+                      [
+                        { "name": "ASPNETCORE_ENVIRONMENT", "value": "Production" },
+                        { "name": "ConnectionStrings__DefaultConnection", "value": "Server=$(sqlServerName).database.windows.net;Database=$(sqlDatabaseName);User Id=sqladmin;Password=$(SqlAdminPassword);TrustServerCertificate=True;" },
+                        { "name": "Jwt__Issuer", "value": "WMS.API" },
+                        { "name": "Jwt__Audience", "value": "WMS.Angular" },
+                        { "name": "Jwt__Key", "value": "$(JwtKey)" },
+                        { "name": "Jwt__ExpiryMinutes", "value": "60" }
+                      ]
+
+  - stage: DeployFrontend
+    displayName: 'Deploy Frontend to Azure App Service / Storage'
+    dependsOn: []
+    jobs:
+      - deployment: DeployClient
+        displayName: 'Deploy Angular App'
+        environment: 'production'
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - download: current
+                  artifact: 'frontend-drop'
+
+                - task: AzureWebApp@1
+                  displayName: 'Deploy to App Service'
+                  inputs:
+                    azureSubscription: '$(azureSubscription)'
+                    appType: 'webApp'
+                    appName: '$(frontendAppName)'
+                    package: '$(Pipeline.Workspace)/frontend-drop'
+                    deploymentMethod: 'zipDeploy'
+
+  - stage: DatabaseMigration
+    displayName: 'Run EF Core Migrations'
+    dependsOn: [DeployBackend]
+    jobs:
+      - job: RunMigrations
+        displayName: 'Execute database migrations'
+        steps:
+          - task: SqlAzureDatawarehouse@1
+            displayName: 'Run migration SQL scripts'
+            inputs:
+              ServerName: '$(sqlServerName).database.windows.net'
+              DatabaseName: '$(sqlDatabaseName)'
+              SqlUsername: 'sqladmin'
+              SqlPassword: '$(SqlAdminPassword)'
+              DeployType: 'SqlTask'
+              SqlFile: '$(Pipeline.Workspace)/backend-drop/drop/database/migrations.sql'

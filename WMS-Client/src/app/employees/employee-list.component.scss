@@ -1,0 +1,16 @@
+.employees {
+  display: grid;
+  gap: 16px;
+}
+
+.employees__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+}
+
+mat-card {
+  border-radius: 20px;
+  overflow: hidden;
+}

@@ -1,0 +1,37 @@
+<section class="employees">
+  <div class="employees__header">
+    <h2>Employees</h2>
+    <mat-form-field appearance="outline">
+      <mat-label>Search employee</mat-label>
+      <input matInput [formControl]="searchControl" />
+    </mat-form-field>
+  </div>
+
+  <mat-card>
+    <mat-table [dataSource]="(employees$ | async) ?? []">
+      <ng-container matColumnDef="employeeCode">
+        <mat-header-cell *matHeaderCellDef>Code</mat-header-cell>
+        <mat-cell *matCellDef="let row">{{ row.employeeCode }}</mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="fullName">
+        <mat-header-cell *matHeaderCellDef>Name</mat-header-cell>
+        <mat-cell *matCellDef="let row">{{ row.fullName }}</mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="email">
+        <mat-header-cell *matHeaderCellDef>Email</mat-header-cell>
+        <mat-cell *matCellDef="let row">{{ row.email }}</mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="departmentName">
+        <mat-header-cell *matHeaderCellDef>Department</mat-header-cell>
+        <mat-cell *matCellDef="let row">{{ row.departmentName }}</mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="roleName">
+        <mat-header-cell *matHeaderCellDef>Role</mat-header-cell>
+        <mat-cell *matCellDef="let row">{{ row.roleName }}</mat-cell>
+      </ng-container>
+
+      <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+    </mat-table>
+  </mat-card>
+</section>

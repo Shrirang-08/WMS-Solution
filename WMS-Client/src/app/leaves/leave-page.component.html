@@ -1,0 +1,47 @@
+<mat-card>
+  <h2>Leaves</h2>
+  <p>Apply leave, approve/reject, and leave statistics will be connected here.</p>
+</mat-card>
+  <div class="leave__header">
+    <h2>Leaves</h2>
+  </div>
+
+  <section *ngIf="auth.role === 'Staff' || auth.role === 'staff'">
+    <h3>Apply for Leave</h3>
+    <form [formGroup]="form" (ngSubmit)="apply()">
+      <mat-form-field appearance="outline" style="width:200px;margin-right:8px;">
+        <mat-label>Start</mat-label>
+        <input matInput type="date" formControlName="startDate" />
+      </mat-form-field>
+      <mat-form-field appearance="outline" style="width:200px;margin-right:8px;">
+        <mat-label>End</mat-label>
+        <input matInput type="date" formControlName="endDate" />
+      </mat-form-field>
+      <mat-form-field appearance="outline" style="width:100%">
+        <mat-label>Reason</mat-label>
+        <input matInput formControlName="reason" />
+      </mat-form-field>
+      <div style="margin-top:8px;">
+        <button mat-raised-button color="primary" type="submit">Apply</button>
+      </div>
+    </form>
+
+    <h3 style="margin-top:16px">My Leaves</h3>
+    <div *ngFor="let l of myLeaves" style="padding:8px 0;border-bottom:1px solid #eee;">
+      {{l.startDate}} → {{l.endDate}} — {{l.status}} — {{l.reason}}
+    </div>
+  </section>
+
+  <section *ngIf="auth.role === 'Manager' || auth.role === 'Admin'">
+    <h3>Pending Leaves From Your Team</h3>
+    <div *ngIf="teamPending.length === 0">No pending leaves.</div>
+    <div *ngFor="let p of teamPending" style="padding:8px 0;border-bottom:1px solid #eee;display:flex;justify-content:space-between;align-items:center;">
+      <div>
+        <strong>{{p.employeeName}}</strong> — {{p.startDate}} → {{p.endDate}} — {{p.reason}}
+      </div>
+      <div>
+        <button mat-button color="primary" (click)="approveReject(p.id, true)">Approve</button>
+        <button mat-button color="warn" (click)="approveReject(p.id, false)">Reject</button>
+      </div>
+    </div>
+  </section>

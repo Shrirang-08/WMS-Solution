@@ -1,0 +1,8 @@
+.shell{ min-height:100vh; display:flex; background: linear-gradient(180deg,#f8fbff,#f1f6ff) }
+.shell__nav{ width:300px; background: linear-gradient(180deg, rgba(15,118,110,0.06), transparent); border-right: none; padding-top:18px }
+.shell__brand{ display:flex; gap:14px; align-items:center; padding:18px 20px }
+.shell__logo{ width:56px; height:56px; border-radius:12px; display:grid; place-items:center; background:var(--brand-gradient); color:#fff; font-weight:800 }
+.shell__brand p{ margin:0; font-size:13px; color:var(--muted); }
+.shell__toolbar{ position:sticky; top:0; z-index:2 }
+.shell__title{ font-weight:700; font-size:1.1rem }
+.shell__content{ flex:1; padding:28px }

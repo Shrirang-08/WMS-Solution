@@ -1,0 +1,60 @@
+<mat-card>
+  <h2>Projects</h2>
+
+  <mat-table [dataSource]="(projects$ | async) || []" class="mat-elevation-z1">
+  <ng-container *ngIf="false"><app-project-dialog></app-project-dialog></ng-container>
+    <ng-container matColumnDef="id">
+      <mat-header-cell *matHeaderCellDef>#</mat-header-cell>
+      <mat-cell *matCellDef="let p">{{ p.id }}</mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="name">
+      <mat-header-cell *matHeaderCellDef>Name</mat-header-cell>
+      <mat-cell *matCellDef="let p">{{ p.name }}</mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="actions">
+      <mat-header-cell *matHeaderCellDef></mat-header-cell>
+      <mat-cell *matCellDef="let p">
+        <button mat-stroked-button color="primary" (click)="toggleAllocations(p.id)">Allocations</button>
+        <button mat-flat-button color="accent" *ngIf="canAssign()" (click)="startAssign(p.id)">Assign</button>
+        <button mat-icon-button color="primary" *ngIf="auth.role === 'Admin'" (click)="openEdit(p)"><mat-icon>edit</mat-icon></button>
+        <button mat-icon-button color="warn" *ngIf="auth.role === 'Admin'" (click)="deleteProject(p.id)"><mat-icon>delete</mat-icon></button>
+      </mat-cell>
+    </ng-container>
+
+    <mat-header-row *matHeaderRowDef="['id','name','actions']"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: ['id','name','actions']"></mat-row>
+  </mat-table>
+
+  <div *ngFor="let p of projects$ | async">
+    <section *ngIf="allocations[p.id]">
+      <h3>Allocations for {{ p.name }}</h3>
+      <ul>
+        <li *ngFor="let a of allocations[p.id]">
+          {{ a.employeeName }} — {{ a.allocationPercentage }}%
+          <button mat-icon-button color="warn" *ngIf="canAssign()" (click)="removeAllocation(p.id, a.id)"><mat-icon>delete</mat-icon></button>
+        </li>
+      </ul>
+
+      <div *ngIf="assigning[p.id]">
+        <label>
+          Employee:
+          <select [(ngModel)]="newAssign[p.id].employeeId">
+            <option [ngValue]="undefined">Select</option>
+            <option *ngFor="let e of (employees$ | async)" [ngValue]="e.id">{{ e.fullName }} ({{ e.employeeCode }})</option>
+          </select>
+        </label>
+        <label>
+          Allocation %:
+          <input type="number" [(ngModel)]="newAssign[p.id].allocationPercentage" />
+        </label>
+        <button mat-button color="primary" (click)="saveAssign(p.id)">Save</button>
+        <button mat-button (click)="cancelAssign(p.id)">Cancel</button>
+      </div>
+    </section>
+  </div>
+</mat-card>
+<div style="margin-top:12px;">
+  <button mat-raised-button color="primary" *ngIf="auth.role === 'Admin'" (click)="openAdd()">Add Project</button>
+</div>

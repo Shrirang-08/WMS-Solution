@@ -1,0 +1,20 @@
+.dashboard h2 {
+  margin: 0 0 20px;
+}
+
+.dashboard__cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+}
+
+.dashboard__cards mat-card {
+  padding: 20px;
+  border-radius: 20px;
+}
+
+.dashboard__cards strong {
+  display: block;
+  font-size: 2rem;
+  margin-bottom: 8px;
+}

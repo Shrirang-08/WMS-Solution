@@ -1,0 +1,104 @@
+<div class="register-page">
+  <mat-card class="register-card">
+    <div class="register-top">
+      <div class="avatar">W</div>
+      <div class="register-info">
+        <h2>Create your account</h2>
+        <p class="muted">Join your team — quick sign up, secure access.</p>
+      </div>
+    </div>
+
+    <form class="register-form" [formGroup]="form" (ngSubmit)="submit()">
+      <div class="register-grid">
+        <mat-form-field appearance="outline">
+          <mat-label>Username</mat-label>
+          <input matInput formControlName="username" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Password</mat-label>
+          <input matInput type="password" formControlName="password" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Employee Code</mat-label>
+          <input matInput formControlName="employeeCode" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Job Title</mat-label>
+          <input matInput formControlName="jobTitle" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>First Name</mat-label>
+          <input matInput formControlName="firstName" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Last Name</mat-label>
+          <input matInput formControlName="lastName" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full">
+          <mat-label>Email</mat-label>
+          <input matInput formControlName="email" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Date of birth</mat-label>
+          <input matInput [matDatepicker]="dob" formControlName="dateOfBirth" />
+          <mat-datepicker-toggle matSuffix [for]="dob"></mat-datepicker-toggle>
+          <mat-datepicker #dob></mat-datepicker>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Hire date</mat-label>
+          <input matInput [matDatepicker]="hire" formControlName="hireDate" />
+          <mat-datepicker-toggle matSuffix [for]="hire"></mat-datepicker-toggle>
+          <mat-datepicker #hire></mat-datepicker>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Phone</mat-label>
+          <input matInput formControlName="phoneNumber" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Salary</mat-label>
+          <input matInput type="number" formControlName="salary" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Department</mat-label>
+          <mat-select formControlName="departmentId">
+            <mat-option value="1">HR</mat-option>
+            <mat-option value="2">Operations</mat-option>
+            <mat-option value="3">Engineering</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Role</mat-label>
+          <mat-select formControlName="roleId">
+            <mat-option value="1">Admin</mat-option>
+            <mat-option value="2">Manager</mat-option>
+            <mat-option value="3">Staff</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div class="register-actions">
+        <div *ngIf="serverError" class="register-error" role="alert">
+          <mat-icon>error</mat-icon>
+          <span>{{ serverError }}</span>
+        </div>
+        <button mat-button color="warn" type="button" (click)="router.navigate(['/login'])">Cancel</button>
+          <button mat-raised-button color="primary" type="submit" [disabled]="form.invalid || isSubmitting">
+            <span *ngIf="!isSubmitting">Create account</span>
+            <span *ngIf="isSubmitting">Creating…</span>
+          </button>
+      </div>
+    </form>
+  </mat-card>
+</div>
