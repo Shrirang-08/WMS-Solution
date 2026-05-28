@@ -100,14 +100,14 @@ stages:
                   inputs:
                     azureSubscription: 'AzureServiceConnection'
                     appType: 'webAppLinux'
-                    appName: 'wms-api-app'
+                    appName: 'wms-api-app-123'
                     package: '$(Pipeline.Workspace)/backend-drop/**/*.zip'
                     deploymentMethod: 'zipDeploy'
 
                 - task: AzureAppServiceSettings@1
                   inputs:
                     azureSubscription: 'AzureServiceConnection'
-                    appName: 'wms-api-app'
+                    appName: 'wms-api-app-123'
                     appSettings: |
                       [
                         { "name": "ASPNETCORE_ENVIRONMENT", "value": "Production" },
