@@ -78,7 +78,7 @@ stages:
 
           - task: PublishBuildArtifacts@1
             inputs:
-              pathToPublish: 'WMS-Client/dist/WMS-Client'
+              pathToPublish: 'WMS-Client/dist/WMS-Client/browser'
               artifactName: 'frontend-drop'
 
   - stage: Deploy

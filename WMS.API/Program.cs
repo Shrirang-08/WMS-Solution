@@ -123,11 +123,8 @@ catch (Exception ex)
 
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+app.UseSwagger();
+app.UseSwaggerUI();
 
 var hasHttpsEndpoint = builder.Configuration.GetSection("Kestrel:Endpoints").GetChildren()
     .Any(endpoint => endpoint.GetValue<string>("Url")?.StartsWith("https://", StringComparison.OrdinalIgnoreCase) == true);
