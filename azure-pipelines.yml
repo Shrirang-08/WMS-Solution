@@ -122,8 +122,13 @@ stages:
           - download: current
             artifact: 'frontend-drop'
 
-          - powershell: |
-              Compress-Archive -Path "$(Pipeline.Workspace)/frontend-drop/*" -DestinationPath "$(Pipeline.Workspace)/frontend.zip" -Force
+          - task: ArchiveFiles@2
+            inputs:
+              rootFolderOrFile: '$(Pipeline.Workspace)/frontend-drop'
+              includeRootFolder: false
+              archiveType: 'zip'
+              archiveFile: '$(Pipeline.Workspace)/frontend.zip'
+              replaceExistingArchive: true
             displayName: 'Zip frontend artifact'
 
           - task: AzureWebApp@1
@@ -133,7 +138,15 @@ stages:
               appName: 'wms-client-app'
               package: '$(Pipeline.Workspace)/frontend.zip'
               deploymentMethod: 'zipDeploy'
-              startupCommand: 'pm2 serve /home/site/wwwroot --no-daemon --spa'
+
+          - task: AzureCLI@2
+            inputs:
+              azureSubscription: 'AzureServiceConnection'
+              scriptType: 'pscore'
+              scriptLocation: 'inlineScript'
+              inlineScript: |
+                az webapp config set --resource-group WMS-RG --name wms-client-app --startup-file 'pm2 serve /home/site/wwwroot --no-daemon --spa'
+            displayName: 'Set startup command'
 
           - task: AzureAppServiceSettings@1
             inputs:
