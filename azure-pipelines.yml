@@ -115,21 +115,21 @@ stages:
                         { "name": "Jwt__Key", "value": "$(JwtKey)" }
                       ]
 
-      - deployment: DeployFrontend
+      - job: DeployFrontend
         displayName: 'Deploy Angular App'
-        environment: 'production'
         dependsOn: []
-        strategy:
-          runOnce:
-            deploy:
-              steps:
-                - download: current
-                  artifact: 'frontend-drop'
+        steps:
+          - download: current
+            artifact: 'frontend-drop'
 
-                - task: AzureWebApp@1
-                  inputs:
-                    azureSubscription: 'AzureServiceConnection'
-                    appType: 'webAppLinux'
-                    appName: 'wms-client-app'
-                    package: '$(Pipeline.Workspace)/frontend-drop'
-                    deploymentMethod: 'zipDeploy'
+          - powershell: |
+              Compress-Archive -Path "$(Pipeline.Workspace)/frontend-drop/*" -DestinationPath "$(Pipeline.Workspace)/frontend.zip" -Force
+            displayName: 'Zip frontend artifact'
+
+          - task: AzureWebApp@1
+            inputs:
+              azureSubscription: 'AzureServiceConnection'
+              appType: 'webAppLinux'
+              appName: 'wms-client-app'
+              package: '$(Pipeline.Workspace)/frontend.zip'
+              deploymentMethod: 'zipDeploy'
