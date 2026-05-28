@@ -133,3 +133,13 @@ stages:
               appName: 'wms-client-app'
               package: '$(Pipeline.Workspace)/frontend.zip'
               deploymentMethod: 'zipDeploy'
+              startupCommand: 'pm2 serve /home/site/wwwroot --no-daemon --spa'
+
+          - task: AzureAppServiceSettings@1
+            inputs:
+              azureSubscription: 'AzureServiceConnection'
+              appName: 'wms-client-app'
+              appSettings: |
+                [
+                  { "name": "SCM_DO_BUILD_DURING_DEPLOYMENT", "value": "false" }
+                ]
