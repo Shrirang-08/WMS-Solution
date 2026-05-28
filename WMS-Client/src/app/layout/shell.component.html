@@ -1,34 +1,78 @@
-<mat-sidenav-container class="shell">
-  <mat-sidenav mode="side" opened class="shell__nav">
-    <div class="shell__brand">
-      <div class="shell__logo">WMS</div>
-      <div>
+<mat-sidenav-container class="shell-container">
+  <mat-sidenav mode="side" opened class="shell-sidenav">
+    <div class="shell-brand">
+      <div class="shell-logo">WMS</div>
+      <div class="shell-brand-text">
         <strong>Workforce</strong>
-        <p>Management System</p>
+        <span>Management System</span>
       </div>
     </div>
 
-    <mat-nav-list>
-      <a mat-list-item routerLink="/dashboard">Dashboard</a>
-      <a mat-list-item routerLink="/employees" *ngIf="authService.role === 'Admin' || authService.role === 'Manager'">Employees</a>
-      <a mat-list-item routerLink="/departments" *ngIf="authService.role === 'Admin'">Departments</a>
-      <a mat-list-item routerLink="/manager" *ngIf="authService.role === 'Manager'">Manager Dashboard</a>
-      <a mat-list-item routerLink="/me" *ngIf="authService.role === 'Staff'">My Activity</a>
-      <a mat-list-item routerLink="/attendance">Attendance</a>
-      <a mat-list-item routerLink="/leaves">Leaves</a>
-      <a mat-list-item routerLink="/projects">Projects</a>
-      <a mat-list-item routerLink="/reports" *ngIf="authService.role === 'Admin'">Reports</a>
+    <mat-divider></mat-divider>
+
+    <div class="shell-user-info">
+      <mat-icon>account_circle</mat-icon>
+      <div>
+        <div class="shell-user-name">{{ employeeName }}</div>
+        <div class="shell-user-role">{{ role }}</div>
+      </div>
+    </div>
+
+    <mat-divider></mat-divider>
+
+    <mat-nav-list class="shell-nav">
+      <a mat-list-item routerLink="/dashboard" routerLinkActive="active-link">
+        <mat-icon matListItemIcon>dashboard</mat-icon>
+        <span matListItemTitle>Dashboard</span>
+      </a>
+      <a mat-list-item routerLink="/employees" routerLinkActive="active-link" *ngIf="role === 'Admin' || role === 'Manager'">
+        <mat-icon matListItemIcon>people</mat-icon>
+        <span matListItemTitle>Employees</span>
+      </a>
+      <a mat-list-item routerLink="/departments" routerLinkActive="active-link" *ngIf="role === 'Admin'">
+        <mat-icon matListItemIcon>business</mat-icon>
+        <span matListItemTitle>Departments</span>
+      </a>
+      <a mat-list-item routerLink="/attendance" routerLinkActive="active-link">
+        <mat-icon matListItemIcon>check_circle</mat-icon>
+        <span matListItemTitle>Attendance</span>
+      </a>
+      <a mat-list-item routerLink="/leaves" routerLinkActive="active-link">
+        <mat-icon matListItemIcon>event_note</mat-icon>
+        <span matListItemTitle>Leaves</span>
+      </a>
+      <a mat-list-item routerLink="/projects" routerLinkActive="active-link">
+        <mat-icon matListItemIcon>folder</mat-icon>
+        <span matListItemTitle>Projects</span>
+      </a>
+      <a mat-list-item routerLink="/reports" routerLinkActive="active-link" *ngIf="role === 'Admin'">
+        <mat-icon matListItemIcon>assessment</mat-icon>
+        <span matListItemTitle>Reports</span>
+      </a>
+    </mat-nav-list>
+
+    <mat-nav-list class="shell-nav-bottom">
+      <a mat-list-item (click)="changePassword()" class="change-pwd-btn">
+        <mat-icon matListItemIcon>lock</mat-icon>
+        <span matListItemTitle>Change Password</span>
+      </a>
+      <a mat-list-item (click)="logout()" class="logout-btn">
+        <mat-icon matListItemIcon>logout</mat-icon>
+        <span matListItemTitle>Logout</span>
+      </a>
     </mat-nav-list>
   </mat-sidenav>
 
   <mat-sidenav-content>
-    <mat-toolbar color="primary" class="shell__toolbar">
-      <span class="shell__title">Enterprise Workforce Management</span>
-      <span class="shell__spacer"></span>
-      <button mat-button (click)="logout()">Logout</button>
+    <mat-toolbar class="shell-toolbar">
+      <span class="shell-toolbar-title">Enterprise Workforce Management</span>
+      <span class="shell-spacer"></span>
+      <div class="shell-toolbar-info">
+        <mat-icon>notifications_none</mat-icon>
+      </div>
     </mat-toolbar>
 
-    <main class="shell__content">
+    <main class="shell-content">
       <router-outlet></router-outlet>
     </main>
   </mat-sidenav-content>

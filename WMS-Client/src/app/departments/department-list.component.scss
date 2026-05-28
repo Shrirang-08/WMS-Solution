@@ -1,4 +1,31 @@
-mat-card {
-  border-radius: 20px;
-  padding: 24px;
+.dept-page {
+  max-width: 1000px;
+}
+
+.dept-page .page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 24px;
+}
+
+.dept-card {
+  border-radius: 16px;
+  overflow: hidden;
+  padding: 0;
+}
+
+.dept-name {
+  font-weight: 500;
+  color: #1e293b;
+}
+
+.dept-desc {
+  color: #64748b;
+}
+
+.no-data {
+  text-align: center;
+  padding: 40px;
+  color: #94a3b8;
 }

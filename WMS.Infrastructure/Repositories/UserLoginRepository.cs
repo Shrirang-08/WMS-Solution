@@ -14,4 +14,18 @@ public class UserLoginRepository(WmsDbContext context) : GenericRepository<UserL
             .Include(x => x.Role)
             .FirstOrDefaultAsync(x => x.Username == username, cancellationToken);
     }
+
+    public Task<UserLogin?> GetByEmployeeIdAsync(int employeeId, CancellationToken cancellationToken = default)
+    {
+        return Context.UserLogins
+            .Include(x => x.Role)
+            .FirstOrDefaultAsync(x => x.EmployeeId == employeeId, cancellationToken);
+    }
+
+    public Task<UserLogin?> GetByIdWithRoleAsync(int id, CancellationToken cancellationToken = default)
+    {
+        return Context.UserLogins
+            .Include(x => x.Role)
+            .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
+    }
 }

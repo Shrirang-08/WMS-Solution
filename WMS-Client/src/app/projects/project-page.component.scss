@@ -1,4 +1,101 @@
-mat-card {
-  border-radius: 20px;
-  padding: 24px;
+.project-page {
+  max-width: 1200px;
+}
+
+.project-page .page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 24px;
+}
+
+.project-card {
+  border-radius: 16px;
+  overflow: hidden;
+  padding: 0;
+  margin-bottom: 24px;
+}
+
+.project-name {
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.project-code {
+  font-size: 0.8rem;
+  color: #64748b;
+}
+
+.project-desc {
+  color: #64748b;
+}
+
+.action-btn {
+  margin: 0 4px;
+}
+
+.no-data {
+  text-align: center;
+  padding: 32px;
+  color: #94a3b8;
+}
+
+.allocation-card {
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 16px;
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.card-header mat-icon {
+  color: #0f766e;
+}
+
+.card-header h3 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.allocation-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.alloc-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.alloc-percent {
+  display: inline-block;
+  padding: 2px 8px;
+  background: rgba(15, 118, 110, 0.08);
+  color: #0f766e;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.assign-form {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 16px;
+  align-items: center;
+}
+
+.assign-actions {
+  display: flex;
+  gap: 8px;
 }

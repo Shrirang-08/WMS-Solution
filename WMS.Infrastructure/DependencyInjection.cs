@@ -33,6 +33,7 @@ public static class DependencyInjection
         services.AddScoped<IAttendanceService, AttendanceService>();
         services.AddScoped<ILeaveService, LeaveService>();
         services.AddScoped<IProjectService, ProjectService>();
+        services.AddScoped<IClientService, ClientService>();
         services.AddScoped<IDashboardService, DashboardService>();
 
         return services;

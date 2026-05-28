@@ -1,0 +1,35 @@
+# .NET
+bin/
+obj/
+*.user
+*.suo
+*.cache
+*.dll
+*.exe
+*.pdb
+*.nupkg
+*.vs/
+.vscode/
+**/Debug/
+**/Release/
+packages/
+
+# Angular
+node_modules/
+WMS-Client/dist/
+WMS-Client/.angular/
+WMS-Client/tmp/
+
+# IDE
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Secrets
+appsettings.Development.json
+*.env

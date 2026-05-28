@@ -1,26 +1,89 @@
-<mat-card>
-  <h2>Attendance</h2>
-  <p>Check-in, check-out, and monthly attendance reports will appear here.</p>
-</mat-card>
-  <div class="attendance__header">
-    <h2>Attendance</h2>
+<div class="attendance-page">
+  <div class="page-header">
+    <h1>Attendance</h1>
+    <p class="page-subtitle">{{ canManageAll ? 'Manage attendance for any employee' : 'Track your check-in and check-out times' }}</p>
   </div>
 
-  <div *ngIf="auth.role === 'Staff'">
-    <div style="margin-bottom:12px;">
-      <button mat-raised-button color="primary" (click)="checkIn()">Check In</button>
+  <mat-card class="employee-select-card" *ngIf="canManageAll">
+    <mat-form-field appearance="outline" class="employee-select">
+      <mat-label>Select Employee</mat-label>
+      <mat-select [(ngModel)]="selectedEmployeeId" (selectionChange)="onEmployeeChange()">
+        <mat-option [value]="null">Myself</mat-option>
+        <mat-option *ngFor="let e of employees" [value]="e.id">{{ e.fullName }} ({{ e.employeeCode }})</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </mat-card>
+
+  <div class="attendance-status-card" *ngIf="todayRecord">
+    <div class="status-icon" [class.checked-in]="todayRecord.checkIn && !todayRecord.checkOut" [class.complete]="todayRecord.checkIn && todayRecord.checkOut">
+      <mat-icon>{{ todayRecord.checkOut ? 'task_alt' : 'radio_button_checked' }}</mat-icon>
     </div>
-    <h3>This Month</h3>
-    <div *ngFor="let a of attendance" style="padding:8px 0;border-bottom:1px solid #eee;">
-      {{a.attendanceDate}} — In: {{a.checkIn || '—'}} Out: {{a.checkOut || '—'}}
-      <button mat-button color="accent" *ngIf="a.checkIn && !a.checkOut" (click)="checkOut(a.id)">Check Out</button>
+    <div class="status-info">
+      <div class="status-title">{{ todayRecord.checkOut ? 'Day Complete' : 'Checked In' }}</div>
+      <div class="status-time">
+        In: {{ formatTime(todayRecord.checkIn) }}
+        <span *ngIf="todayRecord.checkOut"> | Out: {{ formatTime(todayRecord.checkOut) }}</span>
+      </div>
     </div>
+    <button mat-raised-button color="accent" *ngIf="todayRecord.checkIn && !todayRecord.checkOut" (click)="checkOut(todayRecord.id)" [disabled]="loading">
+      {{ loading ? 'Processing...' : 'Check Out' }}
+    </button>
   </div>
 
-  <div *ngIf="auth.role === 'Manager' || auth.role === 'Admin'">
-    <h3>Team Attendance (this month)</h3>
-    <!-- For now show own attendance as placeholder; later aggregate team -->
-    <div *ngFor="let a of attendance" style="padding:8px 0;border-bottom:1px solid #eee;">
-      {{a.attendanceDate}} — In: {{a.checkIn || '—'}} Out: {{a.checkOut || '—'}}
+  <div class="check-in-banner" *ngIf="!todayRecord">
+    <div class="check-in-info">
+      <mat-icon>waving_hand</mat-icon>
+      <div>
+        <div class="check-in-title">Not Checked In Today</div>
+        <div class="check-in-sub">{{ selectedEmployeeId ? 'This employee hasn\'t checked in yet' : 'You haven\'t checked in today' }}</div>
+      </div>
     </div>
+    <button mat-raised-button color="primary" (click)="checkIn()" [disabled]="loading">
+      <mat-icon>login</mat-icon> {{ loading ? 'Processing...' : 'Check In' }}
+    </button>
   </div>
+
+  <mat-card class="attendance-card">
+    <div class="card-header">
+      <h2>This Month</h2>
+      <span class="month-label">{{ attendance.length > 0 ? formatDate(attendance[0].attendanceDate) : 'Current Month' }}</span>
+    </div>
+    <div class="table-container">
+      <table mat-table [dataSource]="attendance">
+        <ng-container matColumnDef="date">
+          <th mat-header-cell *matHeaderCellDef>Date</th>
+          <td mat-cell *matCellDef="let a">{{ formatDate(a.attendanceDate) }}</td>
+        </ng-container>
+        <ng-container matColumnDef="checkIn">
+          <th mat-header-cell *matHeaderCellDef>Check In</th>
+          <td mat-cell *matCellDef="let a">{{ formatTime(a.checkIn) }}</td>
+        </ng-container>
+        <ng-container matColumnDef="checkOut">
+          <th mat-header-cell *matHeaderCellDef>Check Out</th>
+          <td mat-cell *matCellDef="let a">{{ formatTime(a.checkOut) }}</td>
+        </ng-container>
+        <ng-container matColumnDef="status">
+          <th mat-header-cell *matHeaderCellDef>Status</th>
+          <td mat-cell *matCellDef="let a">
+            <span class="status-badge" [class.present]="a.status === 'Present'" [class.late]="a.status === 'Late'">
+              {{ a.status }}
+            </span>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef></th>
+          <td mat-cell *matCellDef="let a">
+            <button mat-button color="accent" *ngIf="a.checkIn && !a.checkOut" (click)="checkOut(a.id)">Check Out</button>
+          </td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+        <tr class="mat-row" *matNoDataRow>
+          <td class="mat-cell" [attr.colspan]="displayedColumns.length">
+            <div class="no-data">No attendance records this month</div>
+          </td>
+        </tr>
+      </table>
+    </div>
+  </mat-card>
+</div>

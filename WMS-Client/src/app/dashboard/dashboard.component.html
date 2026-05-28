@@ -1,18 +1,91 @@
-<section class="dashboard">
-  <h2>Dashboard</h2>
+<div class="dashboard">
+  <div class="page-header">
+    <h1>Dashboard</h1>
+    <p class="page-subtitle">Welcome back, {{ auth.currentUserValue?.employeeName }}</p>
+  </div>
 
   <ng-container *ngIf="summary$ | async as summary">
-    <div class="dashboard__cards">
-      <mat-card><strong>{{ summary.totalEmployees }}</strong><span>Employees</span></mat-card>
-      <mat-card><strong>{{ summary.totalDepartments }}</strong><span>Departments</span></mat-card>
-      <mat-card><strong>{{ summary.totalProjects }}</strong><span>Projects</span></mat-card>
-      <mat-card><strong>{{ summary.pendingLeaves }}</strong><span>Pending Leaves</span></mat-card>
-      <mat-card><strong>{{ summary.todayPresentCount }}</strong><span>Present Today</span></mat-card>
-    </div>
-    <div class="dashboard__actions">
-      <button mat-stroked-button color="primary" *ngIf="auth.role === 'Admin'">Admin: Manage System</button>
-      <button mat-stroked-button color="accent" *ngIf="auth.role === 'Manager'">Manager: View Team</button>
-      <button mat-stroked-button *ngIf="auth.role === 'Staff'">My Activities</button>
+    <div class="kpi-grid">
+      <mat-card class="kpi-card">
+        <div class="kpi-icon" style="background: rgba(99,102,241,0.1); color: #6366f1">
+          <mat-icon>people</mat-icon>
+        </div>
+        <div class="kpi-value">{{ summary.totalEmployees }}</div>
+        <div class="kpi-label">Total Employees</div>
+      </mat-card>
+
+      <mat-card class="kpi-card">
+        <div class="kpi-icon" style="background: rgba(139,92,246,0.1); color: #8b5cf6">
+          <mat-icon>business</mat-icon>
+        </div>
+        <div class="kpi-value">{{ summary.totalDepartments }}</div>
+        <div class="kpi-label">Departments</div>
+      </mat-card>
+
+      <mat-card class="kpi-card">
+        <div class="kpi-icon" style="background: rgba(245,158,11,0.1); color: #f59e0b">
+          <mat-icon>folder</mat-icon>
+        </div>
+        <div class="kpi-value">{{ summary.totalProjects }}</div>
+        <div class="kpi-label">Active Projects</div>
+      </mat-card>
+
+      <mat-card class="kpi-card">
+        <div class="kpi-icon" style="background: rgba(239,68,68,0.1); color: #ef4444">
+          <mat-icon>pending_actions</mat-icon>
+        </div>
+        <div class="kpi-value">{{ summary.pendingLeaves }}</div>
+        <div class="kpi-label">Pending Leaves</div>
+      </mat-card>
+
+      <mat-card class="kpi-card">
+        <div class="kpi-icon" style="background: rgba(16,185,129,0.1); color: #10b981">
+          <mat-icon>check_circle</mat-icon>
+        </div>
+        <div class="kpi-value">{{ summary.todayPresentCount }}</div>
+        <div class="kpi-label">Present Today</div>
+      </mat-card>
     </div>
   </ng-container>
-</section>
+
+  <div class="quick-links-section">
+    <h2>Quick Actions</h2>
+    <div class="quick-links">
+      <a mat-stroked-button *ngFor="let link of quickLinks" [routerLink]="link.route" class="quick-link">
+        <mat-icon [style.color]="link.color">{{ link.icon }}</mat-icon>
+        {{ link.label }}
+      </a>
+    </div>
+  </div>
+
+  <mat-card class="active-card" *ngIf="activeEmployees && activeEmployees.employees.length > 0">
+    <div class="card-header">
+      <mat-icon style="color:#10b981">online_prediction</mat-icon>
+      <h2>Currently Active ({{ activeEmployees.totalActive }})</h2>
+    </div>
+    <div class="table-container">
+      <table mat-table [dataSource]="activeEmployees.employees">
+        <ng-container matColumnDef="employeeName">
+          <th mat-header-cell *matHeaderCellDef>Employee</th>
+          <td mat-cell *matCellDef="let e">{{ e.employeeName }}</td>
+        </ng-container>
+        <ng-container matColumnDef="employeeCode">
+          <th mat-header-cell *matHeaderCellDef>Code</th>
+          <td mat-cell *matCellDef="let e">{{ e.employeeCode }}</td>
+        </ng-container>
+        <ng-container matColumnDef="departmentName">
+          <th mat-header-cell *matHeaderCellDef>Department</th>
+          <td mat-cell *matCellDef="let e">{{ e.departmentName }}</td>
+        </ng-container>
+        <ng-container matColumnDef="checkInTime">
+          <th mat-header-cell *matHeaderCellDef>Checked In</th>
+          <td mat-cell *matCellDef="let e">
+            <span class="live-dot"></span> {{ e.checkInTime }}
+          </td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="['employeeName','employeeCode','departmentName','checkInTime']"></tr>
+        <tr mat-row *matRowDef="let row; columns: ['employeeName','employeeCode','departmentName','checkInTime']"></tr>
+      </table>
+    </div>
+  </mat-card>
+</div>

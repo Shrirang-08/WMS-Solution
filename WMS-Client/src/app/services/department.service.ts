@@ -17,15 +17,15 @@ export class DepartmentService {
     return this.http.get<DepartmentDto[]>(`${environment.apiUrl}/departments`);
   }
 
-  create(request: { name: string; description?: string }) {
+  create(request: { name: string; description?: string }): Observable<any> {
     return this.http.post(`${environment.apiUrl}/departments`, request);
   }
 
-  update(id: number, request: { name: string; description?: string }) {
+  update(id: number, request: { name: string; description?: string }): Observable<any> {
     return this.http.put(`${environment.apiUrl}/departments/${id}`, request);
   }
 
-  delete(id: number) {
+  delete(id: number): Observable<any> {
     return this.http.delete(`${environment.apiUrl}/departments/${id}`);
   }
 }

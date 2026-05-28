@@ -42,4 +42,10 @@ public class CreateEmployeeDto
 
     [Required]
     public int RoleId { get; set; }
+
+    [StringLength(150)]
+    public string? Username { get; set; }
+
+    [StringLength(200)]
+    public string? Password { get; set; }
 }

@@ -15,4 +15,14 @@ public class AttendanceRepository(WmsDbContext context) : GenericRepository<Atte
             .OrderByDescending(x => x.AttendanceDate)
             .ToListAsync(cancellationToken);
     }
+
+    public async Task<IReadOnlyList<Attendance>> GetTodayActiveAsync(CancellationToken cancellationToken = default)
+    {
+        var today = DateTime.UtcNow.Date;
+        return await Context.Attendances
+            .AsNoTracking()
+            .Include(x => x.Employee!).ThenInclude(x => x.Department)
+            .Where(x => x.AttendanceDate == today && x.CheckOutTime == null)
+            .ToListAsync(cancellationToken);
+    }
 }

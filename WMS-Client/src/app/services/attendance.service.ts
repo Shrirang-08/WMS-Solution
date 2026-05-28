@@ -9,6 +9,22 @@ export interface AttendanceDto {
   attendanceDate: string;
   checkIn: string | null;
   checkOut: string | null;
+  status: string;
+  remarks?: string | null;
+}
+
+export interface TodayActiveEmployeeDto {
+  attendanceId: number;
+  employeeId: number;
+  employeeName: string;
+  employeeCode: string;
+  departmentName: string;
+  checkInTime: string;
+}
+
+export interface TodayActiveDto {
+  totalActive: number;
+  employees: TodayActiveEmployeeDto[];
 }
 
 @Injectable({ providedIn: 'root' })
@@ -19,11 +35,15 @@ export class AttendanceService {
     return this.http.get<AttendanceDto[]>(`${environment.apiUrl}/attendance/employee/${employeeId}/month/${year}/${month}`);
   }
 
-  checkIn(request: any) {
+  checkIn(request: { employeeId: number; attendanceDate?: string; checkInTime?: string }) {
     return this.http.post(`${environment.apiUrl}/attendance/check-in`, request);
   }
 
-  checkOut(id: number, request: any) {
+  checkOut(id: number, request: { checkOutTime?: string; remarks?: string }) {
     return this.http.post(`${environment.apiUrl}/attendance/${id}/check-out`, request);
+  }
+
+  getTodayActive(): Observable<TodayActiveDto> {
+    return this.http.get<TodayActiveDto>(`${environment.apiUrl}/attendance/today-active`);
   }
 }

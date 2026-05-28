@@ -1,5 +1,6 @@
 using AutoMapper;
 using WMS.Application.Models.Attendance;
+using WMS.Application.Models.Clients;
 using WMS.Application.Models.Departments;
 using WMS.Application.Models.Dashboard;
 using WMS.Application.Models.Employees;
@@ -32,9 +33,11 @@ public class MappingProfile : Profile
             .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status.ToString()));
 
         CreateMap<Leave, LeaveDto>()
-            .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status.ToString()));
+            .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status.ToString()))
+            .ForMember(dest => dest.EmployeeName, opt => opt.MapFrom(src => src.Employee != null ? src.Employee.FirstName + " " + src.Employee.LastName : string.Empty));
         CreateMap<ApplyLeaveDto, Leave>();
 
+        CreateMap<Client, ClientDto>();
         CreateMap<Project, ProjectDto>();
         CreateMap<CreateProjectDto, Project>();
         CreateMap<UpdateProjectDto, Project>();

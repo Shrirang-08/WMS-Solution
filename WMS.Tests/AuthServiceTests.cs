@@ -69,6 +69,8 @@ public class AuthServiceTests
         public void Update(UserLogin entity) { }
         public void Delete(UserLogin entity) { }
         public Task<UserLogin?> GetByUsernameAsync(string username, CancellationToken cancellationToken = default) => Task.FromResult(UserLoginToReturn);
+        public Task<UserLogin?> GetByEmployeeIdAsync(int employeeId, CancellationToken cancellationToken = default) => Task.FromResult(UserLoginToReturn);
+        public Task<UserLogin?> GetByIdWithRoleAsync(int id, CancellationToken cancellationToken = default) => Task.FromResult(UserLoginToReturn);
     }
 
     private sealed class FakeJwtTokenService : IJwtTokenService

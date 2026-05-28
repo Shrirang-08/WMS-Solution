@@ -1,8 +1,139 @@
-.shell{ min-height:100vh; display:flex; background: linear-gradient(180deg,#f8fbff,#f1f6ff) }
-.shell__nav{ width:300px; background: linear-gradient(180deg, rgba(15,118,110,0.06), transparent); border-right: none; padding-top:18px }
-.shell__brand{ display:flex; gap:14px; align-items:center; padding:18px 20px }
-.shell__logo{ width:56px; height:56px; border-radius:12px; display:grid; place-items:center; background:var(--brand-gradient); color:#fff; font-weight:800 }
-.shell__brand p{ margin:0; font-size:13px; color:var(--muted); }
-.shell__toolbar{ position:sticky; top:0; z-index:2 }
-.shell__title{ font-weight:700; font-size:1.1rem }
-.shell__content{ flex:1; padding:28px }
+.shell-container {
+  height: 100vh;
+}
+
+.shell-sidenav {
+  width: 280px;
+  background: white;
+  border-right: 1px solid rgba(0,0,0,0.06);
+  display: flex;
+  flex-direction: column;
+}
+
+.shell-brand {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 24px 20px 18px;
+}
+
+.shell-logo {
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--brand-gradient);
+  color: #fff;
+  font-weight: 800;
+  font-size: 1.1rem;
+  letter-spacing: 0.5px;
+}
+
+.shell-brand-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.shell-brand-text strong {
+  font-size: 1rem;
+  color: #1e293b;
+}
+
+.shell-brand-text span {
+  font-size: 0.75rem;
+  color: #94a3b8;
+}
+
+.shell-user-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 20px;
+}
+
+.shell-user-info mat-icon {
+  font-size: 36px;
+  width: 36px;
+  height: 36px;
+  color: #64748b;
+}
+
+.shell-user-name {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: #334155;
+}
+
+.shell-user-role {
+  font-size: 0.75rem;
+  color: #94a3b8;
+  text-transform: capitalize;
+}
+
+.shell-nav {
+  flex: 1;
+  padding: 8px 0;
+}
+
+.shell-nav a, .shell-nav-bottom a {
+  border-radius: 0 24px 24px 0;
+  margin: 2px 12px 2px 0;
+  height: 48px;
+}
+
+.shell-nav a.active-link {
+  background: rgba(15, 118, 110, 0.08);
+  color: #0f766e;
+  font-weight: 500;
+}
+
+.shell-nav a.active-link mat-icon {
+  color: #0f766e;
+}
+
+.shell-nav-bottom {
+  padding: 8px 0;
+}
+
+.logout-btn {
+  color: #ef4444;
+}
+
+.change-pwd-btn {
+  color: #64748b;
+}
+
+.shell-toolbar {
+  background: white !important;
+  color: #334155 !important;
+  border-bottom: 1px solid rgba(0,0,0,0.06);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.shell-toolbar-title {
+  font-weight: 600;
+  font-size: 1rem;
+  color: #475569;
+}
+
+.shell-spacer {
+  flex: 1 1 auto;
+}
+
+.shell-toolbar-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #94a3b8;
+}
+
+.shell-content {
+  padding: 28px 32px;
+  min-height: calc(100vh - 64px);
+  background: #f8fafc;
+}

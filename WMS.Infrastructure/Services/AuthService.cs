@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using WMS.Application.Interfaces.Repositories;
 using WMS.Application.Interfaces.Services;
 using WMS.Application.Models.Auth;
+using WMS.Domain.Entities;
 using WMS.Infrastructure.Persistence;
 
 namespace WMS.Infrastructure.Services;
@@ -116,5 +117,46 @@ public class AuthService(IUnitOfWork unitOfWork, IJwtTokenService jwtTokenServic
             Token = token,
             ExpiresAtUtc = DateTime.UtcNow.AddMinutes(60)
         };
+    }
+
+    public async Task ChangePasswordAsync(int currentUserId, string currentRole, ChangePasswordDto request, CancellationToken cancellationToken = default)
+    {
+        UserLogin? targetLogin;
+
+        if (request.UserId.HasValue || request.EmployeeId.HasValue)
+        {
+            // Admin or Manager changing another user's password
+            if (currentRole != "Admin" && currentRole != "Manager")
+                throw new UnauthorizedAccessException("Only admins and managers can change another user's password.");
+
+            targetLogin = request.UserId.HasValue
+                ? await unitOfWork.UserLogins.GetByIdWithRoleAsync(request.UserId.Value, cancellationToken)
+                : await unitOfWork.UserLogins.GetByEmployeeIdAsync(request.EmployeeId!.Value, cancellationToken);
+            if (targetLogin == null)
+                throw new KeyNotFoundException("User not found.");
+
+            if (currentRole == "Manager" && targetLogin.Role?.Name == "Admin")
+                throw new UnauthorizedAccessException("Managers cannot change an admin's password.");
+
+            if (currentRole == "Manager" && targetLogin.Role?.Name == "Manager")
+                throw new UnauthorizedAccessException("Managers cannot change another manager's password.");
+        }
+        else
+        {
+            // Employee changing their own password
+            targetLogin = await unitOfWork.UserLogins.GetByIdWithRoleAsync(currentUserId, cancellationToken)
+                ?? throw new KeyNotFoundException("User not found.");
+
+            if (string.IsNullOrWhiteSpace(request.CurrentPassword))
+                throw new InvalidOperationException("Current password is required to change your own password.");
+
+            var verification = PasswordHasher.VerifyHashedPassword(new object(), targetLogin.PasswordHash, request.CurrentPassword);
+            if (verification == PasswordVerificationResult.Failed)
+                throw new UnauthorizedAccessException("Current password is incorrect.");
+        }
+
+        targetLogin.PasswordHash = PasswordHasher.HashPassword(new object(), request.NewPassword);
+        unitOfWork.UserLogins.Update(targetLogin);
+        await unitOfWork.SaveChangesAsync(cancellationToken);
     }
 }

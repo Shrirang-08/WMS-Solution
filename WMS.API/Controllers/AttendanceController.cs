@@ -27,4 +27,8 @@ public class AttendanceController(IAttendanceService attendanceService) : Contro
         await attendanceService.CheckOutAsync(id, request, cancellationToken);
         return NoContent();
     }
+
+    [HttpGet("today-active")]
+    public async Task<ActionResult<TodayActiveDto>> GetTodayActive(CancellationToken cancellationToken)
+        => Ok(await attendanceService.GetTodayActiveAsync(cancellationToken));
 }

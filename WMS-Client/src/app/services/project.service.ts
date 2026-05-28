@@ -43,11 +43,11 @@ export class ProjectService {
     return this.http.delete(`${environment.apiUrl}/projects/${projectId}/allocations/${allocationId}`);
   }
 
-  create(request: { name: string; description?: string; startDate: string; endDate?: string | null; }) {
+  create(request: { name: string; description?: string; clientId: number; departmentId: number; startDate: string; endDate?: string | null; }) {
     return this.http.post(`${environment.apiUrl}/projects`, request);
   }
 
-  update(id: number, request: { name: string; description?: string; startDate: string; endDate?: string | null; }) {
+  update(id: number, request: { name: string; description?: string; clientId: number; departmentId: number; startDate: string; endDate?: string | null; }) {
     return this.http.put(`${environment.apiUrl}/projects/${id}`, request);
   }
 

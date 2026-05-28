@@ -1,39 +1,48 @@
-<mat-card>
-  <div class="departments__header">
-    <h2>Departments</h2>
+<div class="dept-page">
+  <div class="page-header">
     <div>
-      <button mat-stroked-button color="primary" *ngIf="canEdit()" (click)="openAdd()">Add Department</button>
+      <h1>Departments</h1>
+      <p class="page-subtitle">Manage organizational departments</p>
     </div>
+    <button mat-raised-button color="primary" *ngIf="canEdit()" (click)="openAdd()">
+      <mat-icon>add</mat-icon> Add Department
+    </button>
   </div>
 
-  <mat-table [dataSource]="(departments$ | async) || []" class="mat-elevation-z1">
-
-  <!-- reference dialog component so the standalone component compiler includes it (not rendered) -->
-  <ng-container *ngIf="false"><app-department-dialog></app-department-dialog></ng-container>
-    <ng-container matColumnDef="id">
-      <mat-header-cell *matHeaderCellDef>#</mat-header-cell>
-      <mat-cell *matCellDef="let dept">{{ dept.id }}</mat-cell>
-    </ng-container>
-
-    <ng-container matColumnDef="name">
-      <mat-header-cell *matHeaderCellDef>Name</mat-header-cell>
-      <mat-cell *matCellDef="let dept">{{ dept.name }}</mat-cell>
-    </ng-container>
-
-    <ng-container matColumnDef="description">
-      <mat-header-cell *matHeaderCellDef>Description</mat-header-cell>
-      <mat-cell *matCellDef="let dept">{{ dept.description }}</mat-cell>
-    </ng-container>
-
-    <ng-container matColumnDef="actions">
-      <mat-header-cell *matHeaderCellDef></mat-header-cell>
-      <mat-cell *matCellDef="let dept">
-        <button mat-icon-button color="primary" (click)="openEdit(dept)" *ngIf="canEdit()"><mat-icon>edit</mat-icon></button>
-        <button mat-icon-button color="warn" (click)="delete(dept.id)" *ngIf="canEdit()"><mat-icon>delete</mat-icon></button>
-      </mat-cell>
-    </ng-container>
-
-    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-    <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
-  </mat-table>
-</mat-card>
+  <mat-card class="dept-card">
+    <div class="table-container">
+      <table mat-table [dataSource]="(departments$ | async) || []">
+        <ng-container matColumnDef="id">
+          <th mat-header-cell *matHeaderCellDef>#</th>
+          <td mat-cell *matCellDef="let dept">{{ dept.id }}</td>
+        </ng-container>
+        <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef>Name</th>
+          <td mat-cell *matCellDef="let dept">
+            <span class="dept-name">{{ dept.name }}</span>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="description">
+          <th mat-header-cell *matHeaderCellDef>Description</th>
+          <td mat-cell *matCellDef="let dept" class="dept-desc">{{ dept.description || '—' }}</td>
+        </ng-container>
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef></th>
+          <td mat-cell *matCellDef="let dept">
+            <button mat-icon-button color="primary" matTooltip="Edit" (click)="openEdit(dept)" *ngIf="canEdit()">
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button mat-icon-button color="warn" matTooltip="Delete" (click)="delete(dept.id)" *ngIf="canEdit()">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+        <tr class="mat-row" *matNoDataRow>
+          <td class="mat-cell" [attr.colspan]="displayedColumns.length"><div class="no-data">No departments</div></td>
+        </tr>
+      </table>
+    </div>
+  </mat-card>
+</div>

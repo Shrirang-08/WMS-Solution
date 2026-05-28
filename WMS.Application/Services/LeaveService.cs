@@ -15,6 +15,12 @@ public class LeaveService(IUnitOfWork unitOfWork, IMapper mapper) : ILeaveServic
         return mapper.Map<IReadOnlyList<LeaveDto>>(leaves);
     }
 
+    public async Task<IReadOnlyList<LeaveDto>> GetPendingAsync(CancellationToken cancellationToken = default)
+    {
+        var leaves = await unitOfWork.Leaves.GetPendingAsync(cancellationToken);
+        return mapper.Map<IReadOnlyList<LeaveDto>>(leaves);
+    }
+
     public async Task<int> ApplyAsync(ApplyLeaveDto request, CancellationToken cancellationToken = default)
     {
         var leave = mapper.Map<Leave>(request);
@@ -34,10 +40,21 @@ public class LeaveService(IUnitOfWork unitOfWork, IMapper mapper) : ILeaveServic
         await unitOfWork.SaveChangesAsync(cancellationToken);
     }
 
-    public async Task ApproveRejectAsync(int id, ApproveRejectLeaveDto request, CancellationToken cancellationToken = default)
+    public async Task ApproveRejectAsync(int id, ApproveRejectLeaveDto request, int actingEmployeeId, string actingRole, CancellationToken cancellationToken = default)
     {
         var leave = await unitOfWork.Leaves.GetByIdAsync(id, cancellationToken)
             ?? throw new KeyNotFoundException($"Leave {id} was not found.");
+
+        if (leave.EmployeeId == actingEmployeeId)
+            throw new UnauthorizedAccessException("You cannot approve/reject your own leave request.");
+
+        var employee = await unitOfWork.Employees.GetDetailsAsync(leave.EmployeeId, cancellationToken)
+            ?? throw new KeyNotFoundException($"Employee {leave.EmployeeId} was not found.");
+
+        var leaveEmployeeRole = employee.Role?.Name ?? "";
+
+        if (actingRole == "Manager" && leaveEmployeeRole != "Employee")
+            throw new UnauthorizedAccessException("Managers can only approve/reject leave requests from Employees.");
 
         leave.Status = request.IsApproved ? LeaveStatus.Approved : LeaveStatus.Rejected;
         leave.ManagerComments = request.ManagerComments;

@@ -40,4 +40,22 @@ public class AttendanceService(IUnitOfWork unitOfWork, IMapper mapper) : IAttend
         unitOfWork.Attendances.Update(attendance);
         await unitOfWork.SaveChangesAsync(cancellationToken);
     }
+
+    public async Task<TodayActiveDto> GetTodayActiveAsync(CancellationToken cancellationToken = default)
+    {
+        var activeAttendances = await unitOfWork.Attendances.GetTodayActiveAsync(cancellationToken);
+        return new TodayActiveDto
+        {
+            TotalActive = activeAttendances.Count,
+            Employees = activeAttendances.Select(a => new TodayActiveEmployeeDto
+            {
+                AttendanceId = a.Id,
+                EmployeeId = a.EmployeeId,
+                EmployeeName = a.Employee!.FullName,
+                EmployeeCode = a.Employee.EmployeeCode,
+                DepartmentName = a.Employee.Department?.Name ?? "",
+                CheckInTime = a.CheckInTime.ToString(@"hh\:mm")
+            }).ToList()
+        };
+    }
 }

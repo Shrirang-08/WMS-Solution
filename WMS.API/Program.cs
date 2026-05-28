@@ -2,6 +2,7 @@ using System.Text;
 using AutoMapper;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.OpenApi.Models;
@@ -9,6 +10,7 @@ using Serilog;
 using WMS.API.Middleware;
 using WMS.Application.Mapping;
 using WMS.Infrastructure;
+using WMS.Infrastructure.Persistence;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -97,6 +99,27 @@ builder.Services.AddSwaggerGen(options =>
 
 var app = builder.Build();
 Console.WriteLine($"[startup] Builder.Build() completed at {DateTime.Now:O} (elapsed {_startupWatch.ElapsedMilliseconds}ms)");
+
+// Apply pending migrations and seed data
+try
+{
+    using (var scope = app.Services.CreateScope())
+    {
+        var db = scope.ServiceProvider.GetRequiredService<WmsDbContext>();
+        Console.WriteLine("[startup] Running MigrateAsync...");
+        await db.Database.MigrateAsync();
+        Console.WriteLine("[startup] MigrateAsync completed.");
+        Console.WriteLine("[startup] Running SeedAsync...");
+        await WmsDbInitializer.SeedAsync(db);
+        Console.WriteLine("[startup] SeedAsync completed.");
+    }
+}
+catch (Exception ex)
+{
+    Console.WriteLine($"[startup] ERROR during migration/seeding: {ex.Message}");
+    Console.WriteLine($"[startup] StackTrace: {ex.StackTrace}");
+    throw;
+}
 
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 

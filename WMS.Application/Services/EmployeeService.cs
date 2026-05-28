@@ -1,4 +1,5 @@
 using AutoMapper;
+using Microsoft.AspNetCore.Identity;
 using WMS.Application.Interfaces.Repositories;
 using WMS.Application.Interfaces.Services;
 using WMS.Application.Models.Employees;
@@ -8,6 +9,7 @@ namespace WMS.Application.Services;
 
 public class EmployeeService(IUnitOfWork unitOfWork, IMapper mapper) : IEmployeeService
 {
+    private static readonly PasswordHasher<object> PasswordHasher = new();
     public async Task<IReadOnlyList<EmployeeListDto>> GetAllAsync(CancellationToken cancellationToken = default)
     {
         var employees = await unitOfWork.Employees.GetAllAsync(cancellationToken);
@@ -31,6 +33,22 @@ public class EmployeeService(IUnitOfWork unitOfWork, IMapper mapper) : IEmployee
         var employee = mapper.Map<Employee>(request);
         await unitOfWork.Employees.AddAsync(employee, cancellationToken);
         await unitOfWork.SaveChangesAsync(cancellationToken);
+
+        if (!string.IsNullOrWhiteSpace(request.Username))
+        {
+            var userLogin = new UserLogin
+            {
+                EmployeeId = employee.Id,
+                Username = request.Username,
+                PasswordHash = PasswordHasher.HashPassword(new object(), request.Password ?? "Changeme123"),
+                RoleId = request.RoleId,
+                IsActive = true,
+                CreatedAt = DateTime.UtcNow
+            };
+            await unitOfWork.UserLogins.AddAsync(userLogin, cancellationToken);
+            await unitOfWork.SaveChangesAsync(cancellationToken);
+        }
+
         return employee.Id;
     }
 
@@ -43,6 +61,14 @@ public class EmployeeService(IUnitOfWork unitOfWork, IMapper mapper) : IEmployee
         employee.IsActive = request.IsActive;
         unitOfWork.Employees.Update(employee);
         await unitOfWork.SaveChangesAsync(cancellationToken);
+
+        var userLogin = await unitOfWork.UserLogins.GetByEmployeeIdAsync(employee.Id, cancellationToken);
+        if (userLogin != null && userLogin.RoleId != request.RoleId)
+        {
+            userLogin.RoleId = request.RoleId;
+            unitOfWork.UserLogins.Update(userLogin);
+            await unitOfWork.SaveChangesAsync(cancellationToken);
+        }
     }
 
     public async Task DeleteAsync(int id, CancellationToken cancellationToken = default)

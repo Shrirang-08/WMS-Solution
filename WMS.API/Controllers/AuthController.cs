@@ -31,4 +31,16 @@ public class AuthController(IAuthService authService) : ControllerBase
     {
         return Ok(new { message = "Logout completed on the client by removing the JWT token." });
     }
+
+    [HttpPost("change-password")]
+    [Authorize]
+    public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordDto request, CancellationToken cancellationToken)
+    {
+        var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+        var roleClaim = User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value ?? string.Empty;
+        var currentUserId = int.Parse(userIdClaim ?? "0");
+
+        await authService.ChangePasswordAsync(currentUserId, roleClaim, request, cancellationToken);
+        return Ok(new { message = "Password changed successfully." });
+    }
 }

@@ -11,7 +11,18 @@ public class LeaveRepository(WmsDbContext context) : GenericRepository<Leave>(co
     {
         return await Context.Leaves
             .AsNoTracking()
+            .Include(x => x.Employee)
             .Where(x => x.EmployeeId == employeeId)
+            .OrderByDescending(x => x.CreatedAt)
+            .ToListAsync(cancellationToken);
+    }
+
+    public async Task<IReadOnlyList<Leave>> GetPendingAsync(CancellationToken cancellationToken = default)
+    {
+        return await Context.Leaves
+            .AsNoTracking()
+            .Include(x => x.Employee)
+            .Where(x => x.Status == Domain.Enums.LeaveStatus.Pending)
             .OrderByDescending(x => x.CreatedAt)
             .ToListAsync(cancellationToken);
     }

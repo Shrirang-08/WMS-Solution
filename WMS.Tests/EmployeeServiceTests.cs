@@ -129,6 +129,7 @@ public class EmployeeServiceTests
         public void Update(Attendance entity) { }
         public void Delete(Attendance entity) { }
         public Task<IReadOnlyList<Attendance>> GetByEmployeeAndMonthAsync(int employeeId, int year, int month, CancellationToken cancellationToken = default) => Task.FromResult<IReadOnlyList<Attendance>>(Array.Empty<Attendance>());
+        public Task<IReadOnlyList<Attendance>> GetTodayActiveAsync(CancellationToken cancellationToken = default) => Task.FromResult<IReadOnlyList<Attendance>>(Array.Empty<Attendance>());
     }
 
     private sealed class FakeLeaveRepository : ILeaveRepository
@@ -140,6 +141,7 @@ public class EmployeeServiceTests
         public void Update(Leave entity) { }
         public void Delete(Leave entity) { }
         public Task<IReadOnlyList<Leave>> GetByEmployeeAsync(int employeeId, CancellationToken cancellationToken = default) => Task.FromResult<IReadOnlyList<Leave>>(Array.Empty<Leave>());
+        public Task<IReadOnlyList<Leave>> GetPendingAsync(CancellationToken cancellationToken = default) => Task.FromResult<IReadOnlyList<Leave>>(Array.Empty<Leave>());
     }
 
     private sealed class FakeProjectRepository : IProjectRepository
@@ -161,5 +163,7 @@ public class EmployeeServiceTests
         public void Update(UserLogin entity) { }
         public void Delete(UserLogin entity) { }
         public Task<UserLogin?> GetByUsernameAsync(string username, CancellationToken cancellationToken = default) => Task.FromResult<UserLogin?>(null);
+        public Task<UserLogin?> GetByEmployeeIdAsync(int employeeId, CancellationToken cancellationToken = default) => Task.FromResult<UserLogin?>(null);
+        public Task<UserLogin?> GetByIdWithRoleAsync(int id, CancellationToken cancellationToken = default) => Task.FromResult<UserLogin?>(null);
     }
 }

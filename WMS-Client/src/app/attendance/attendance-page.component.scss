@@ -1,4 +1,141 @@
-mat-card {
+.attendance-page {
+  max-width: 1000px;
+}
+
+.attendance-status-card {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  background: white;
+  border-radius: 16px;
+  padding: 20px 24px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  margin-bottom: 20px;
+}
+
+.status-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(16,185,129,0.1);
+  color: #10b981;
+}
+
+.status-icon.complete {
+  background: rgba(99,102,241,0.1);
+  color: #6366f1;
+}
+
+.status-icon mat-icon {
+  font-size: 32px;
+  width: 32px;
+  height: 32px;
+}
+
+.status-info {
+  flex: 1;
+}
+
+.status-title {
+  font-weight: 600;
+  font-size: 1.1rem;
+  color: #1e293b;
+}
+
+.status-time {
+  font-size: 0.85rem;
+  color: #94a3b8;
+  margin-top: 2px;
+}
+
+.check-in-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: linear-gradient(135deg, #0f766e, #1d4ed8);
+  color: white;
+  border-radius: 16px;
+  padding: 24px 28px;
+  margin-bottom: 20px;
+}
+
+.check-in-info {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.check-in-info mat-icon {
+  font-size: 40px;
+  width: 40px;
+  height: 40px;
+}
+
+.check-in-title {
+  font-size: 1.3rem;
+  font-weight: 700;
+}
+
+.check-in-sub {
+  opacity: 0.85;
+  font-size: 0.9rem;
+}
+
+.attendance-card {
+  border-radius: 16px;
+  overflow: hidden;
+  padding: 0;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 24px 0;
+}
+
+.card-header h2 {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.month-label {
+  font-size: 0.85rem;
+  color: #94a3b8;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 4px 12px;
   border-radius: 20px;
-  padding: 24px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  background: rgba(16,185,129,0.08);
+  color: #10b981;
+}
+
+.status-badge.late {
+  background: rgba(245,158,11,0.08);
+  color: #f59e0b;
+}
+
+.employee-select-card {
+  border-radius: 16px;
+  padding: 16px 24px;
+  margin-bottom: 20px;
+}
+
+.employee-select {
+  width: 100%;
+  max-width: 400px;
+}
+
+.no-data {
+  text-align: center;
+  padding: 40px;
+  color: #94a3b8;
 }

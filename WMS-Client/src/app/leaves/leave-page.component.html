@@ -1,47 +1,136 @@
-<mat-card>
-  <h2>Leaves</h2>
-  <p>Apply leave, approve/reject, and leave statistics will be connected here.</p>
-</mat-card>
-  <div class="leave__header">
-    <h2>Leaves</h2>
+<div class="leave-page">
+  <div class="page-header">
+    <h1>Leave Management</h1>
+    <p class="page-subtitle">{{ auth.role === 'Admin' || auth.role === 'Manager' ? 'Manage leave requests' : 'Apply for and track your leaves' }}</p>
   </div>
 
-  <section *ngIf="auth.role === 'Staff' || auth.role === 'staff'">
-    <h3>Apply for Leave</h3>
-    <form [formGroup]="form" (ngSubmit)="apply()">
-      <mat-form-field appearance="outline" style="width:200px;margin-right:8px;">
-        <mat-label>Start</mat-label>
-        <input matInput type="date" formControlName="startDate" />
-      </mat-form-field>
-      <mat-form-field appearance="outline" style="width:200px;margin-right:8px;">
-        <mat-label>End</mat-label>
-        <input matInput type="date" formControlName="endDate" />
-      </mat-form-field>
-      <mat-form-field appearance="outline" style="width:100%">
-        <mat-label>Reason</mat-label>
-        <input matInput formControlName="reason" />
-      </mat-form-field>
-      <div style="margin-top:8px;">
-        <button mat-raised-button color="primary" type="submit">Apply</button>
-      </div>
-    </form>
+  <div class="leave-grid">
+    <div class="leave-left">
+      <mat-card class="apply-card">
+        <div class="card-header">
+          <mat-icon>add_circle</mat-icon>
+          <h2>Apply for Leave</h2>
+        </div>
+        <form [formGroup]="form" (ngSubmit)="apply()" class="leave-form">
+          <mat-form-field appearance="outline">
+            <mat-label>Leave Type</mat-label>
+            <mat-select formControlName="leaveType">
+              <mat-option value="Annual">Annual Leave</mat-option>
+              <mat-option value="Sick">Sick Leave</mat-option>
+              <mat-option value="Personal">Personal Leave</mat-option>
+              <mat-option value="Other">Other</mat-option>
+            </mat-select>
+          </mat-form-field>
+          <div class="date-row">
+            <mat-form-field appearance="outline">
+              <mat-label>From</mat-label>
+              <input matInput [matDatepicker]="from" formControlName="fromDate" />
+              <mat-datepicker-toggle matSuffix [for]="from"></mat-datepicker-toggle>
+              <mat-datepicker #from></mat-datepicker>
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>To</mat-label>
+              <input matInput [matDatepicker]="to" formControlName="toDate" />
+              <mat-datepicker-toggle matSuffix [for]="to"></mat-datepicker-toggle>
+              <mat-datepicker #to></mat-datepicker>
+            </mat-form-field>
+          </div>
+          <mat-form-field appearance="outline">
+            <mat-label>Reason</mat-label>
+            <textarea matInput formControlName="reason" rows="3"></textarea>
+          </mat-form-field>
+          <button mat-raised-button color="primary" type="submit" [disabled]="form.invalid" class="submit-btn">
+            <mat-icon>send</mat-icon> Submit Request
+          </button>
+        </form>
+      </mat-card>
 
-    <h3 style="margin-top:16px">My Leaves</h3>
-    <div *ngFor="let l of myLeaves" style="padding:8px 0;border-bottom:1px solid #eee;">
-      {{l.startDate}} → {{l.endDate}} — {{l.status}} — {{l.reason}}
+      <mat-card class="leaves-card">
+        <div class="card-header">
+          <mat-icon>history</mat-icon>
+          <h2>My Leave History</h2>
+        </div>
+        <div class="table-container">
+          <table mat-table [dataSource]="myLeaves">
+            <ng-container matColumnDef="from">
+              <th mat-header-cell *matHeaderCellDef>From</th>
+              <td mat-cell *matCellDef="let l">{{ formatDate(l.fromDate) }}</td>
+            </ng-container>
+            <ng-container matColumnDef="to">
+              <th mat-header-cell *matHeaderCellDef>To</th>
+              <td mat-cell *matCellDef="let l">{{ formatDate(l.toDate) }}</td>
+            </ng-container>
+            <ng-container matColumnDef="type">
+              <th mat-header-cell *matHeaderCellDef>Type</th>
+              <td mat-cell *matCellDef="let l">{{ l.leaveType }}</td>
+            </ng-container>
+            <ng-container matColumnDef="reason">
+              <th mat-header-cell *matHeaderCellDef>Reason</th>
+              <td mat-cell *matCellDef="let l">{{ l.reason }}</td>
+            </ng-container>
+            <ng-container matColumnDef="status">
+              <th mat-header-cell *matHeaderCellDef>Status</th>
+              <td mat-cell *matCellDef="let l">
+                <span class="leave-status" [class.approved]="l.status === 'Approved'" [class.rejected]="l.status === 'Rejected'" [class.pending]="l.status === 'Pending'" [class.cancelled]="l.status === 'Cancelled'">
+                  {{ l.status }}
+                </span>
+              </td>
+            </ng-container>
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+            <tr class="mat-row" *matNoDataRow>
+              <td class="mat-cell" [attr.colspan]="displayedColumns.length"><div class="no-data">No leave records</div></td>
+            </tr>
+          </table>
+        </div>
+      </mat-card>
     </div>
-  </section>
 
-  <section *ngIf="auth.role === 'Manager' || auth.role === 'Admin'">
-    <h3>Pending Leaves From Your Team</h3>
-    <div *ngIf="teamPending.length === 0">No pending leaves.</div>
-    <div *ngFor="let p of teamPending" style="padding:8px 0;border-bottom:1px solid #eee;display:flex;justify-content:space-between;align-items:center;">
-      <div>
-        <strong>{{p.employeeName}}</strong> — {{p.startDate}} → {{p.endDate}} — {{p.reason}}
-      </div>
-      <div>
-        <button mat-button color="primary" (click)="approveReject(p.id, true)">Approve</button>
-        <button mat-button color="warn" (click)="approveReject(p.id, false)">Reject</button>
-      </div>
+    <div class="leave-right" *ngIf="auth.role === 'Manager' || auth.role === 'Admin'">
+      <mat-card class="pending-card">
+        <div class="card-header">
+          <mat-icon>pending_actions</mat-icon>
+          <h2>Pending Requests <span class="pending-count" *ngIf="pendingCount > 0">{{ pendingCount }}</span></h2>
+        </div>
+        <div class="table-container">
+          <table mat-table [dataSource]="teamPending">
+            <ng-container matColumnDef="employee">
+              <th mat-header-cell *matHeaderCellDef>Employee</th>
+              <td mat-cell *matCellDef="let l">
+                <div class="emp-name-cell">{{ l.employeeName || 'N/A' }}</div>
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="from">
+              <th mat-header-cell *matHeaderCellDef>From</th>
+              <td mat-cell *matCellDef="let l">{{ formatDate(l.fromDate) }}</td>
+            </ng-container>
+            <ng-container matColumnDef="to">
+              <th mat-header-cell *matHeaderCellDef>To</th>
+              <td mat-cell *matCellDef="let l">{{ formatDate(l.toDate) }}</td>
+            </ng-container>
+            <ng-container matColumnDef="reason">
+              <th mat-header-cell *matHeaderCellDef>Reason</th>
+              <td mat-cell *matCellDef="let l">{{ l.reason }}</td>
+            </ng-container>
+            <ng-container matColumnDef="actions">
+              <th mat-header-cell *matHeaderCellDef></th>
+              <td mat-cell *matCellDef="let l">
+                <button mat-icon-button color="primary" matTooltip="Approve" (click)="approveReject(l.id, true)">
+                  <mat-icon>check_circle</mat-icon>
+                </button>
+                <button mat-icon-button color="warn" matTooltip="Reject" (click)="approveReject(l.id, false)">
+                  <mat-icon>cancel</mat-icon>
+                </button>
+              </td>
+            </ng-container>
+            <tr mat-header-row *matHeaderRowDef="pendingColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: pendingColumns"></tr>
+            <tr class="mat-row" *matNoDataRow>
+              <td class="mat-cell" [attr.colspan]="pendingColumns.length"><div class="no-data">No pending requests</div></td>
+            </tr>
+          </table>
+        </div>
+      </mat-card>
     </div>
-  </section>
+  </div>
+</div>
