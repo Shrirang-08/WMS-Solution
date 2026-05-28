@@ -9,7 +9,6 @@ pool:
   vmImage: 'windows-latest'
 
 variables:
-  solution: 'WMS-Solution.slnx'
   buildConfiguration: 'Release'
   dotnetVersion: '8.x'
   nodeVersion: '20.x'
@@ -30,13 +29,13 @@ stages:
             displayName: 'Restore packages'
             inputs:
               command: 'restore'
-              projects: '$(solution)'
+              projects: '**/*.csproj'
 
           - task: DotNetCoreCLI@2
             displayName: 'Build'
             inputs:
               command: 'build'
-              projects: '$(solution)'
+              projects: '**/*.csproj'
               arguments: '--configuration $(buildConfiguration) --no-restore'
 
           - task: DotNetCoreCLI@2
