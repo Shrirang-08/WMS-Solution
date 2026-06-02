@@ -15,18 +15,18 @@
   </mat-card>
 
   <div class="attendance-status-card" *ngIf="todayRecord">
-    <div class="status-icon" [class.checked-in]="todayRecord.checkIn && !todayRecord.checkOut" [class.complete]="todayRecord.checkIn && todayRecord.checkOut">
-      <mat-icon>{{ todayRecord.checkOut ? 'task_alt' : 'radio_button_checked' }}</mat-icon>
+    <div class="status-icon" [class.checked-in]="isCheckedIn" [class.complete]="isComplete">
+      <mat-icon>{{ isComplete ? 'task_alt' : 'radio_button_checked' }}</mat-icon>
     </div>
     <div class="status-info">
-      <div class="status-title">{{ todayRecord.checkOut ? 'Day Complete' : 'Checked In' }}</div>
+      <div class="status-title">{{ isComplete ? 'Day Complete' : 'Checked In' }}</div>
       <div class="status-time">
         In: {{ formatTime(todayRecord.checkIn) }}
         <span *ngIf="todayRecord.checkOut"> | Out: {{ formatTime(todayRecord.checkOut) }}</span>
       </div>
     </div>
-    <button mat-raised-button color="accent" *ngIf="todayRecord.checkIn && !todayRecord.checkOut" (click)="checkOut(todayRecord.id)" [disabled]="loading">
-      {{ loading ? 'Processing...' : 'Check Out' }}
+    <button mat-raised-button color="accent" *ngIf="isCheckedIn" (click)="checkOut(todayRecord.id)" [disabled]="loading">
+      <mat-icon>logout</mat-icon> {{ loading ? 'Processing...' : 'Check Out' }}
     </button>
   </div>
 

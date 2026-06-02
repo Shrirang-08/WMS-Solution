@@ -19,7 +19,6 @@ import { AttendancePageComponent } from './attendance/attendance-page.component'
 import { LeavePageComponent } from './leaves/leave-page.component';
 import { ProjectPageComponent } from './projects/project-page.component';
 import { ProjectDialogComponent } from './projects/project-dialog.component';
-import { RegisterComponent } from './auth/register.component';
 import { AuthInterceptor } from './interceptors/auth.interceptor';
 import { ReportsPageComponent } from './reports/reports-page.component';
 
@@ -46,7 +45,6 @@ import { ReportsPageComponent } from './reports/reports-page.component';
     LeavePageComponent,
     ProjectPageComponent,
     ProjectDialogComponent,
-    RegisterComponent,
     ReportsPageComponent
   ],
   providers: [

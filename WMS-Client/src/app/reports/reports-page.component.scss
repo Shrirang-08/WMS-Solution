@@ -1,0 +1,38 @@
+.reports-page {
+  max-width: 1200px;
+}
+
+.report-card {
+  .table-container {
+    margin: 16px 0;
+    overflow-x: auto;
+  }
+
+  table {
+    width: 100%;
+  }
+
+  .report-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 16px;
+  }
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+
+  &.present {
+    background: #d1fae5;
+    color: #065f46;
+  }
+
+  &.late {
+    background: #fef3c7;
+    color: #92400e;
+  }
+}

@@ -25,9 +25,10 @@ import { EmployeeService } from '../services/employee.service';
 export class LeavePageComponent implements OnInit {
   form!: FormGroup;
   myLeaves: LeaveDto[] = [];
-  teamPending: any[] = [];
-  displayedColumns = ['from', 'to', 'type', 'reason', 'status'];
-  pendingColumns = ['employee', 'from', 'to', 'reason', 'actions'];
+  myPending: LeaveDto[] = [];
+  teamPending: LeaveDto[] = [];
+  historyColumns = ['from', 'to', 'type', 'reason', 'status'];
+  pendingColumns = ['from', 'to', 'type', 'reason', 'actions'];
 
   constructor(
     private readonly fb: FormBuilder,
@@ -53,7 +54,10 @@ export class LeavePageComponent implements OnInit {
     const empId = current?.employeeId ?? null;
     if (!empId) return;
 
-    this.leaveService.getByEmployee(empId).subscribe(x => this.myLeaves = x);
+    this.leaveService.getByEmployee(empId).subscribe(x => {
+      this.myPending = x.filter(l => l.status === 'Pending');
+      this.myLeaves = x.filter(l => l.status !== 'Pending');
+    });
 
     if (this.auth.role === 'Manager' || this.auth.role === 'Admin') {
       this.employeeService.getAll().subscribe(employees => {
@@ -115,6 +119,6 @@ export class LeavePageComponent implements OnInit {
   }
 
   get pendingCount(): number {
-    return this.teamPending.length;
+    return this.myPending.length + this.teamPending.length;
   }
 }

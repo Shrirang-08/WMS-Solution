@@ -17,11 +17,12 @@ public class AttendanceService(IUnitOfWork unitOfWork, IMapper mapper) : IAttend
 
     public async Task<int> CheckInAsync(CheckInDto request, CancellationToken cancellationToken = default)
     {
+        var now = DateTime.Now;
         var attendance = new Attendance
         {
             EmployeeId = request.EmployeeId,
-            AttendanceDate = request.AttendanceDate ?? DateTime.UtcNow.Date,
-            CheckInTime = request.CheckInTime ?? DateTime.UtcNow.TimeOfDay,
+            AttendanceDate = request.AttendanceDate ?? now.Date,
+            CheckInTime = request.CheckInTime ?? now.TimeOfDay,
             Status = AttendanceStatus.Present
         };
 
@@ -35,10 +36,16 @@ public class AttendanceService(IUnitOfWork unitOfWork, IMapper mapper) : IAttend
         var attendance = await unitOfWork.Attendances.GetByIdAsync(attendanceId, cancellationToken)
             ?? throw new KeyNotFoundException($"Attendance {attendanceId} was not found.");
 
-        attendance.CheckOutTime = request.CheckOutTime ?? DateTime.UtcNow.TimeOfDay;
+        attendance.CheckOutTime = request.CheckOutTime ?? DateTime.Now.TimeOfDay;
         attendance.Remarks = request.Remarks;
         unitOfWork.Attendances.Update(attendance);
         await unitOfWork.SaveChangesAsync(cancellationToken);
+    }
+
+    public async Task<IReadOnlyList<AttendanceDto>> GetAllAsync(CancellationToken cancellationToken = default)
+    {
+        var attendances = await unitOfWork.Attendances.GetAllWithEmployeeAsync(cancellationToken);
+        return mapper.Map<IReadOnlyList<AttendanceDto>>(attendances);
     }
 
     public async Task<TodayActiveDto> GetTodayActiveAsync(CancellationToken cancellationToken = default)

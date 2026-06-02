@@ -130,6 +130,7 @@ public class EmployeeServiceTests
         public void Delete(Attendance entity) { }
         public Task<IReadOnlyList<Attendance>> GetByEmployeeAndMonthAsync(int employeeId, int year, int month, CancellationToken cancellationToken = default) => Task.FromResult<IReadOnlyList<Attendance>>(Array.Empty<Attendance>());
         public Task<IReadOnlyList<Attendance>> GetTodayActiveAsync(CancellationToken cancellationToken = default) => Task.FromResult<IReadOnlyList<Attendance>>(Array.Empty<Attendance>());
+        public Task<IReadOnlyList<Attendance>> GetAllWithEmployeeAsync(CancellationToken cancellationToken = default) => Task.FromResult<IReadOnlyList<Attendance>>(Array.Empty<Attendance>());
     }
 
     private sealed class FakeLeaveRepository : ILeaveRepository

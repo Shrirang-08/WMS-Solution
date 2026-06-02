@@ -3,7 +3,6 @@ import { RouterModule, Routes } from '@angular/router';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { EmployeeListComponent } from './employees/employee-list.component';
 import { LoginComponent } from './auth/login.component';
-import { RegisterComponent } from './auth/register.component';
 import { ShellComponent } from './layout/shell.component';
 import { authGuard } from './guards/auth.guard';
 import { DepartmentListComponent } from './departments/department-list.component';
@@ -16,7 +15,6 @@ import { ReportsPageComponent } from './reports/reports-page.component';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
-  { path: 'register', component: RegisterComponent },
   {
     path: '',
     component: ShellComponent,

@@ -6,6 +6,7 @@ import { Observable } from 'rxjs';
 export interface AttendanceDto {
   id: number;
   employeeId: number;
+  employeeName?: string;
   attendanceDate: string;
   checkIn: string | null;
   checkOut: string | null;
@@ -41,6 +42,10 @@ export class AttendanceService {
 
   checkOut(id: number, request: { checkOutTime?: string; remarks?: string }) {
     return this.http.post(`${environment.apiUrl}/attendance/${id}/check-out`, request);
+  }
+
+  getAll(): Observable<AttendanceDto[]> {
+    return this.http.get<AttendanceDto[]>(`${environment.apiUrl}/attendance/all`);
   }
 
   getTodayActive(): Observable<TodayActiveDto> {

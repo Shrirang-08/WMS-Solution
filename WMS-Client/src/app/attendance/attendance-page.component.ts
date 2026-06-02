@@ -63,23 +63,31 @@ export class AttendancePageComponent implements OnInit {
   checkIn(): void {
     const empId = this.effectiveEmployeeId;
     if (!empId) return;
+    const now = new Date();
     this.loading = true;
-    this.attendanceService.checkIn({ employeeId: empId }).subscribe({
+    this.attendanceService.checkIn({
+      employeeId: empId,
+      attendanceDate: now.toISOString(),
+      checkInTime: now.toTimeString().slice(0, 8)
+    }).subscribe({
       next: () => {
         this.snackBar.open('Checked in successfully', 'Close', { duration: 3000 });
         this.loadAttendance();
         this.loading = false;
       },
       error: (e) => {
-        this.snackBar.open(e.error?.message || 'Already checked in today', 'Close', { duration: 3000 });
+        this.snackBar.open(e.error?.message || 'Error checking in', 'Close', { duration: 3000 });
         this.loading = false;
       }
     });
   }
 
   checkOut(id: number): void {
+    const now = new Date();
     this.loading = true;
-    this.attendanceService.checkOut(id, {}).subscribe({
+    this.attendanceService.checkOut(id, {
+      checkOutTime: now.toTimeString().slice(0, 8)
+    }).subscribe({
       next: () => {
         this.snackBar.open('Checked out successfully', 'Close', { duration: 3000 });
         this.loadAttendance();
@@ -92,14 +100,17 @@ export class AttendancePageComponent implements OnInit {
     });
   }
 
-  get isCheckedInToday(): boolean {
-    const today = new Date().toISOString().slice(0, 10);
-    return this.attendance.some(a => a.attendanceDate?.startsWith(today) && a.checkIn && !a.checkOut);
+  get todayRecord(): AttendanceDto | undefined {
+    const todayStr = this.toLocalDateStr(new Date());
+    return this.attendance.find(a => a.attendanceDate && this.toLocalDateStr(new Date(a.attendanceDate)) === todayStr);
   }
 
-  get todayRecord(): AttendanceDto | undefined {
-    const today = new Date().toISOString().slice(0, 10);
-    return this.attendance.find(a => a.attendanceDate?.startsWith(today));
+  get isCheckedIn(): boolean {
+    return !!this.todayRecord?.checkIn && !this.todayRecord?.checkOut;
+  }
+
+  get isComplete(): boolean {
+    return !!this.todayRecord?.checkIn && !!this.todayRecord?.checkOut;
   }
 
   formatTime(t: string | null): string {
@@ -111,5 +122,12 @@ export class AttendancePageComponent implements OnInit {
     if (!d) return '';
     const date = new Date(d);
     return date.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+  }
+
+  private toLocalDateStr(d: Date): string {
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${y}-${m}-${day}`;
   }
 }

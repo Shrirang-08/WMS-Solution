@@ -8,4 +8,5 @@ public interface IAttendanceService
     Task<int> CheckInAsync(CheckInDto request, CancellationToken cancellationToken = default);
     Task CheckOutAsync(int attendanceId, CheckOutDto request, CancellationToken cancellationToken = default);
     Task<TodayActiveDto> GetTodayActiveAsync(CancellationToken cancellationToken = default);
+    Task<IReadOnlyList<AttendanceDto>> GetAllAsync(CancellationToken cancellationToken = default);
 }

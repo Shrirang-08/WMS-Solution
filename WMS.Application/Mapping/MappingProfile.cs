@@ -30,7 +30,8 @@ public class MappingProfile : Profile
         CreateMap<UpdateDepartmentDto, Department>();
 
         CreateMap<Attendance, AttendanceDto>()
-            .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status.ToString()));
+            .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status.ToString()))
+            .ForMember(dest => dest.EmployeeName, opt => opt.MapFrom(src => src.Employee != null ? src.Employee.FirstName + " " + src.Employee.LastName : string.Empty));
 
         CreateMap<Leave, LeaveDto>()
             .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status.ToString()))

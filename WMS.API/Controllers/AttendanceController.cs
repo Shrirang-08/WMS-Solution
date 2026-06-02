@@ -28,6 +28,11 @@ public class AttendanceController(IAttendanceService attendanceService) : Contro
         return NoContent();
     }
 
+    [HttpGet("all")]
+    [Authorize(Roles = "Admin")]
+    public async Task<ActionResult<IReadOnlyList<AttendanceDto>>> GetAll(CancellationToken cancellationToken)
+        => Ok(await attendanceService.GetAllAsync(cancellationToken));
+
     [HttpGet("today-active")]
     public async Task<ActionResult<TodayActiveDto>> GetTodayActive(CancellationToken cancellationToken)
         => Ok(await attendanceService.GetTodayActiveAsync(cancellationToken));
