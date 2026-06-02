@@ -27,7 +27,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAngularApp", policy =>
     {
-        policy.WithOrigins("http://localhost:4200")
+        policy.WithOrigins("http://localhost:4200", "https://wms-client-app-fcaeehc8ccdhhben.centralindia-01.azurewebsites.net")
             .AllowAnyHeader()
             .AllowAnyMethod();
     });
