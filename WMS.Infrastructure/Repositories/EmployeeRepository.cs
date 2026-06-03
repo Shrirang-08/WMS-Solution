@@ -7,6 +7,16 @@ namespace WMS.Infrastructure.Repositories;
 
 public class EmployeeRepository(WmsDbContext context) : GenericRepository<Employee>(context), IEmployeeRepository
 {
+    public override async Task<IReadOnlyList<Employee>> GetAllAsync(CancellationToken cancellationToken = default)
+    {
+        return await Context.Employees
+            .AsNoTracking()
+            .Include(x => x.Department)
+            .Include(x => x.Role)
+            .OrderBy(x => x.FirstName)
+            .ToListAsync(cancellationToken);
+    }
+
     public async Task<IReadOnlyList<Employee>> SearchAsync(string searchTerm, CancellationToken cancellationToken = default)
     {
         searchTerm = searchTerm.Trim();

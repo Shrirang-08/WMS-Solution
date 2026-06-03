@@ -16,7 +16,7 @@ import { AttendanceService, AttendanceDto } from '../services/attendance.service
 })
 export class ReportsPageComponent implements OnInit {
   attendanceRecords: AttendanceDto[] = [];
-  displayedColumns = ['employeeId', 'date', 'checkIn', 'checkOut', 'status'];
+  displayedColumns = ['employeeName', 'date', 'checkIn', 'checkOut', 'status'];
 
   constructor(
     private readonly employeeService: EmployeeService,
@@ -45,9 +45,13 @@ export class ReportsPageComponent implements OnInit {
   }
 
   exportAttendance(): void {
+    const employees = this.attendanceRecords.reduce((map, a) => {
+      if (a.employeeId && !map.has(a.employeeId)) map.set(a.employeeId, a.employeeName ?? '');
+      return map;
+    }, new Map<number, string>());
     const rows = this.attendanceRecords.map(a => ({
-      EmployeeCode: '',
-      EmployeeName: '',
+      EmployeeId: a.employeeId,
+      EmployeeName: a.employeeName || '',
       Date: a.attendanceDate ? new Date(a.attendanceDate).toLocaleDateString() : '',
       CheckIn: a.checkIn || '',
       CheckOut: a.checkOut || '',

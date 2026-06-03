@@ -23,13 +23,6 @@ export class AuthService {
     );
   }
 
-  register(request: any) {
-    return this.http.post<LoginResponse>(`${environment.apiUrl}/auth/register`, request).pipe(
-      tap(response => this.setUser(response)),
-      map(response => response)
-    );
-  }
-
   logout(): void {
     localStorage.removeItem(this.storageKey);
     this.currentUserSubject.next(null);

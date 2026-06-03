@@ -12,9 +12,9 @@
     <p>Complete check-in and check-out records for all employees.</p>
     <div class="table-container">
       <table mat-table [dataSource]="attendanceRecords">
-        <ng-container matColumnDef="employeeId">
+        <ng-container matColumnDef="employeeName">
           <th mat-header-cell *matHeaderCellDef>Employee</th>
-          <td mat-cell *matCellDef="let a">{{ a.employeeId }}</td>
+          <td mat-cell *matCellDef="let a">{{ a.employeeName || 'N/A' }}</td>
         </ng-container>
         <ng-container matColumnDef="date">
           <th mat-header-cell *matHeaderCellDef>Date</th>

@@ -17,7 +17,7 @@ public class AttendanceService(IUnitOfWork unitOfWork, IMapper mapper) : IAttend
 
     public async Task<int> CheckInAsync(CheckInDto request, CancellationToken cancellationToken = default)
     {
-        var now = DateTime.Now;
+        var now = DateTime.UtcNow;
         var attendance = new Attendance
         {
             EmployeeId = request.EmployeeId,
@@ -36,7 +36,7 @@ public class AttendanceService(IUnitOfWork unitOfWork, IMapper mapper) : IAttend
         var attendance = await unitOfWork.Attendances.GetByIdAsync(attendanceId, cancellationToken)
             ?? throw new KeyNotFoundException($"Attendance {attendanceId} was not found.");
 
-        attendance.CheckOutTime = request.CheckOutTime ?? DateTime.Now.TimeOfDay;
+        attendance.CheckOutTime = request.CheckOutTime ?? DateTime.UtcNow.TimeOfDay;
         attendance.Remarks = request.Remarks;
         unitOfWork.Attendances.Update(attendance);
         await unitOfWork.SaveChangesAsync(cancellationToken);

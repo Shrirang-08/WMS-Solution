@@ -19,7 +19,7 @@ public class AttendanceRepository(WmsDbContext context) : GenericRepository<Atte
 
     public async Task<IReadOnlyList<Attendance>> GetTodayActiveAsync(CancellationToken cancellationToken = default)
     {
-        var today = DateTime.Now.Date;
+        var today = DateTime.UtcNow.Date;
         return await Context.Attendances
             .AsNoTracking()
             .Include(x => x.Employee!).ThenInclude(x => x.Department)

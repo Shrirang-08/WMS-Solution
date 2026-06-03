@@ -18,7 +18,7 @@ public class AuthController(IAuthService authService) : ControllerBase
     }
 
     [HttpPost("register")]
-    [AllowAnonymous]
+    [Authorize(Roles = "Admin")]
     public async Task<ActionResult<LoginResponseDto>> Register([FromBody] RegisterRequestDto request, CancellationToken cancellationToken)
     {
         var response = await authService.RegisterAsync(request, cancellationToken);

@@ -21,7 +21,7 @@ import { EmployeeService, EmployeeListItem } from '../services/employee.service'
 })
 export class AttendancePageComponent implements OnInit {
   attendance: AttendanceDto[] = [];
-  displayedColumns = ['date', 'checkIn', 'checkOut', 'status', 'actions'];
+  displayedColumns = ['date', 'checkIn', 'checkOut', 'status'];
   loading = false;
   employees: EmployeeListItem[] = [];
   selectedEmployeeId: number | null = null;
